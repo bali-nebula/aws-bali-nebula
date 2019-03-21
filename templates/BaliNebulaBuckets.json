@@ -53,10 +53,7 @@
             ]
           ]
         },
-        "AccessControl": "Private",
-        "VersioningConfiguration": {
-          "Status": "Suspended"
-        }
+        "AccessControl": "Private"
       }
     },
     "DraftsBucket": {
@@ -103,10 +100,7 @@
             ]
           ]
         },
-        "AccessControl": "Private",
-        "VersioningConfiguration": {
-          "Status": "Suspended"
-        }
+        "AccessControl": "Private"
       }
     },
     "TypesBucket": {
@@ -123,10 +117,7 @@
             ]
           ]
         },
-        "AccessControl": "Private",
-        "VersioningConfiguration": {
-          "Status": "Suspended"
-        }
+        "AccessControl": "Private"
       }
     },
     "QueuesBucket": {
@@ -143,10 +134,7 @@
             ]
           ]
         },
-        "AccessControl": "Private",
-        "VersioningConfiguration": {
-          "Status": "Suspended"
-        }
+        "AccessControl": "Private"
       }
     }
   }

@@ -1,0 +1,251 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula.",
+  "Parameters": {
+    "NebulaColor": {
+      "Description": "The color of the Bali Nebula.",
+      "Type": "String",
+      "Default": "blue",
+      "AllowedValues" : ["blue", "green"],
+      "ConstraintDescription" : "You must specify either 'blue' or 'green'."
+    }
+  },
+  "Conditions": {
+    "IsBlue" : {
+       "Fn::Equals": [
+          {"Ref": "NebulaColor"},
+          "blue"
+       ]
+    }
+  },
+  "Resources": {
+    "GatewayRestApi": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "Nebula API",
+        "Description": "This API allows a client application to interact with the Bali Nebula."
+      }
+    },
+    "LambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": ["sts:AssumeRole"],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": ["lambda.amazonaws.com"]
+              }
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "LambdaPolicy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:aws:logs:",
+                          {
+                            "Ref": "AWS::Region"
+                          },
+                          ":",
+                          {
+                            "Ref": "AWS::AccountId"
+                          },
+                          ":log-group:/lambda/",
+                          {
+                            "Ref": "GatewayRestApi"
+                          },
+                          "/*"
+                        ]
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "GatewayLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Description": "This lambda function implements the Bali Cloud accounting gateway functionality.",
+        "FunctionName": {
+          "Fn::Join": [
+            "",
+            [
+              "bali-accounting-gateway-",
+              {
+                "Ref": "NebulaColor"
+              }
+            ]
+          ]
+        },
+        "Environment": {
+          "Variables": {
+            "NebulaColor": {
+              "Ref": "NebulaColor"
+            },
+            "RequestQueueUrl": {
+              "Ref": "RequestQueue"
+            },
+            "CertificateRegistryUrl": "http://certificates.balicloud.net"
+          }
+        },
+        "Code": {
+          "S3Bucket": {
+            "Fn::Join": [
+              "",
+              [
+                "craterdog-bali-nebula-",
+                {
+                  "Ref": "AWS::Region"
+                }
+              ]
+            ]
+          },
+          "S3Key": "lambdas/BaliNebulaAPI.zip"
+        },
+        "Handler": "bali.accounting.AccountingGatewayHandler::handle",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "GatewayLambdaRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "java8",
+        "Timeout": 2
+      }
+    },
+    "GatewayLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Principal": "apigateway.amazonaws.com",
+        "Action": "lambda:invokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GatewayLambda",
+            "Arn"
+          ]
+        },
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "GatewayRestApi"
+              },
+              "/*"
+            ]
+          ]
+        }
+      }
+    },
+    "OpenAccountResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "GatewayRestApi"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "GatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "open-account"
+      }
+    },
+    "OpenAccountMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "GatewayRestApi"
+        },
+        "ResourceId": {
+          "Ref": "OpenAccountResource"
+        },
+        "HttpMethod": "POST",
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "Type": "AWS",
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GatewayLambda",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 202
+          }
+        ]
+      }
+    },
+    "RestApiDeployment": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "GatewayRestApi"
+        },
+        "StageName": {
+          "Ref": "NebulaColor"
+        }
+      },
+      "DependsOn": [
+        "OpenAccountMethod"
+      ]
+    }
+  },
+  "Outputs": {
+    "ApiId": {
+      "Value": {
+        "Ref": "GatewayRestApi"
+      }
+    }
+  }
+}

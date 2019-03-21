@@ -27,7 +27,7 @@
         "Path": "/",
         "Policies": [
           {
-            "PolicyName": "log-replication-policy",
+            "PolicyName": "LogReplicationPolicy",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
@@ -148,10 +148,7 @@
             ]
           ]
         },
-        "AccessControl": "Private",
-        "VersioningConfiguration": {
-          "Status": "Suspended"
-        }
+        "AccessControl": "Private"
       }
     }
   }
