@@ -1,0 +1,153 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "This cloud formation template is used to setup the S3 buckets for the Bali Nebula.",
+  "Parameters": {
+    "LoggingBucket": {
+      "Description": "The name of the S3 bucket in which all log entries are stored.",
+      "Type": "String",
+      "Default": "craterdog-bali-logs-us-east-1"
+    }
+  },
+  "Resources": {
+    "BackupBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "",
+            [
+              "craterdog-bali-backups-",
+              {
+                "Ref": "AWS::Region"
+              }
+            ]
+          ]
+        },
+        "AccessControl": "Private",
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "log-expiration",
+              "ExpirationInDays": 30,
+              "NoncurrentVersionExpirationInDays": 7,
+              "Status": "Enabled"
+            }
+          ]
+        }
+      }
+    },
+    "CertificatesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "",
+            [
+              "craterdog-bali-certificates-",
+              {
+                "Ref": "AWS::Region"
+              }
+            ]
+          ]
+        },
+        "AccessControl": "Private",
+        "VersioningConfiguration": {
+          "Status": "Suspended"
+        }
+      }
+    },
+    "DraftsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "",
+            [
+              "craterdog-bali-drafts-",
+              {
+                "Ref": "AWS::Region"
+              }
+            ]
+          ]
+        },
+        "AccessControl": "Private",
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "DraftDocumentExpiration",
+              "NoncurrentVersionExpirationInDays": 1,
+              "ExpirationInDays": 10,
+              "Status": "Enabled"
+            }
+          ]
+        }
+      }
+    },
+    "DocumentsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "-",
+            [
+              "craterdog-bali-documents",
+              {
+                "Ref": "AWS::Region"
+              }
+            ]
+          ]
+        },
+        "AccessControl": "Private",
+        "VersioningConfiguration": {
+          "Status": "Suspended"
+        }
+      }
+    },
+    "TypesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "-",
+            [
+              "craterdog-bali-types",
+              {
+                "Ref": "AWS::Region"
+              }
+            ]
+          ]
+        },
+        "AccessControl": "Private",
+        "VersioningConfiguration": {
+          "Status": "Suspended"
+        }
+      }
+    },
+    "QueuesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "-",
+            [
+              "craterdog-bali-queues",
+              {
+                "Ref": "AWS::Region"
+              }
+            ]
+          ]
+        },
+        "AccessControl": "Private",
+        "VersioningConfiguration": {
+          "Status": "Suspended"
+        }
+      }
+    }
+  }
+}

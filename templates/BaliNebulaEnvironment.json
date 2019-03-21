@@ -1,0 +1,158 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "This cloud formation template is used to setup the Bali Nebula environment.",
+  "Parameters": {
+    "BackupBucket": {
+      "Description": "The name of the bucket that is used for storing backups.",
+      "Type": "String",
+      "Default": "craterdog-bali-backups-us-west-2"
+    }
+  },
+  "Resources": {
+    "LogReplicationRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "s3.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "log-replication-policy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "s3:Get*",
+                    "s3:ListBucket"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    { "Fn::Join": [ "", [ "arn:aws:s3:::craterdog-bali-logs-", { "Ref": "AWS::Region" } ] ] },
+                    { "Fn::Join": [ "", [ "arn:aws:s3:::craterdog-bali-logs-", { "Ref": "AWS::Region" }, "/*" ] ] }
+                  ]
+                },
+                {
+                  "Action": [
+                    "s3:ReplicateObject",
+                    "s3:ReplicateDelete",
+                    "s3:ReplicateTags",
+                    "s3:GetObjectVersionTagging"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    { "Fn::Join": [ "", [ "arn:aws:s3:::", { "Ref": "BackupBucket" }, "/*" ] ] }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "LogBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": { "Fn::Join": [ "", [ "craterdog-bali-logs-", { "Ref": "AWS::Region" } ] ] },
+        "AccessControl": "Private",
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "log-expiration",
+              "ExpirationInDays": 30,
+              "NoncurrentVersionExpirationInDays": 7,
+              "Status": "Enabled"
+            }
+          ]
+        },
+        "ReplicationConfiguration": {
+          "Role": { "Fn::GetAtt": [ "LogReplicationRole", "Arn" ] },
+          "Rules": [
+            {
+              "Prefix": "",
+              "Destination": {
+                "Bucket": { "Fn::Join": [ "", [ "arn:aws:s3:::", { "Ref": "BackupBucket" } ] ] },
+                "StorageClass": "STANDARD_IA"
+              },
+              "Status": "Enabled"
+            }
+          ]
+        }
+      }
+    },
+    "LogBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": { "Ref": "LogBucket" },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AWSCloudTrailAclCheck",
+              "Effect": "Allow",
+              "Principal": { "Service": "cloudtrail.amazonaws.com" },
+              "Action": "s3:GetBucketAcl",
+              "Resource": { "Fn::Join": [ "", [ "arn:aws:s3:::craterdog-bali-logs-", { "Ref": "AWS::Region" } ] ] }
+            },
+            {
+              "Sid": "AWSCloudTrailWrite",
+              "Effect": "Allow",
+              "Principal": { "Service":"cloudtrail.amazonaws.com" },
+              "Action": "s3:PutObject",
+              "Resource": { "Fn::Join": [ "", [ "arn:aws:s3:::craterdog-bali-logs-", { "Ref": "AWS::Region" }, "/*" ] ] },
+              "Condition": {
+                "StringEquals": {
+                  "s3:x-amz-acl": "bucket-owner-full-control"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "CloudTrail": {
+      "Type": "AWS::CloudTrail::Trail",
+      "Properties": {
+        "S3BucketName": { "Ref": "LogBucket" },
+        "IncludeGlobalServiceEvents": true,
+        "EnableLogFileValidation": true,
+        "IsMultiRegionTrail": true,
+        "IsLogging": "true"
+      },
+      "DependsOn": ["LogBucketPolicy"]
+    },
+    "NebulaBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "-",
+            [
+              "craterdog-bali-nebula-",
+              {
+                "Ref": "AWS::Region"
+              }
+            ]
+          ]
+        },
+        "AccessControl": "Private",
+        "VersioningConfiguration": {
+          "Status": "Suspended"
+        }
+      }
+    }
+  }
+}
