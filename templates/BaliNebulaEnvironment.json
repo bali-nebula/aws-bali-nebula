@@ -71,9 +71,9 @@
         "LifecycleConfiguration": {
           "Rules": [
             {
-              "Id": "log-expiration",
-              "ExpirationInDays": 30,
-              "NoncurrentVersionExpirationInDays": 7,
+              "Id": "LogExpiration",
+              "ExpirationInDays": 10,
+              "NoncurrentVersionExpirationInDays": 1,
               "Status": "Enabled"
             }
           ]
@@ -139,7 +139,7 @@
       "Properties": {
         "BucketName": {
           "Fn::Join": [
-            "-",
+            "",
             [
               "craterdog-bali-nebula-",
               {

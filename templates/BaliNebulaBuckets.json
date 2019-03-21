@@ -30,9 +30,9 @@
         "LifecycleConfiguration": {
           "Rules": [
             {
-              "Id": "log-expiration",
-              "ExpirationInDays": 30,
-              "NoncurrentVersionExpirationInDays": 7,
+              "Id": "BackupExpiration",
+              "ExpirationInDays": 10,
+              "NoncurrentVersionExpirationInDays": 1,
               "Status": "Enabled"
             }
           ]
@@ -80,9 +80,9 @@
         "LifecycleConfiguration": {
           "Rules": [
             {
-              "Id": "DraftDocumentExpiration",
-              "NoncurrentVersionExpirationInDays": 1,
+              "Id": "DraftExpiration",
               "ExpirationInDays": 10,
+              "NoncurrentVersionExpirationInDays": 1,
               "Status": "Enabled"
             }
           ]
