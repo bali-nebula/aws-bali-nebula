@@ -186,8 +186,11 @@
         "ResourceId": {
           "Ref": "CertificateResource"
         },
-        "HttpMethod": "HEAD",
         "AuthorizationType": "NONE",
+        "HttpMethod": "HEAD",
+        "RequestParameters": {
+          "method.request.path.identifier": true
+        },
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "HEAD",
@@ -222,8 +225,11 @@
         "ResourceId": {
           "Ref": "CertificateResource"
         },
-        "HttpMethod": "POST",
         "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "RequestParameters": {
+          "method.request.path.identifier": true
+        },
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "POST",
@@ -258,8 +264,11 @@
         "ResourceId": {
           "Ref": "CertificateResource"
         },
-        "HttpMethod": "GET",
         "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "RequestParameters": {
+          "method.request.path.identifier": true
+        },
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "GET",
@@ -294,8 +303,11 @@
         "ResourceId": {
           "Ref": "CertificateResource"
         },
-        "HttpMethod": "PUT",
         "AuthorizationType": "NONE",
+        "HttpMethod": "PUT",
+        "RequestParameters": {
+          "method.request.path.identifier": true
+        },
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "PUT",
@@ -330,8 +342,11 @@
         "ResourceId": {
           "Ref": "CertificateResource"
         },
-        "HttpMethod": "DELETE",
         "AuthorizationType": "NONE",
+        "HttpMethod": "DELETE",
+        "RequestParameters": {
+          "method.request.path.identifier": true
+        },
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "DELETE",

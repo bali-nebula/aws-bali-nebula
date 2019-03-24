@@ -13,7 +13,7 @@ aws --region us-east-1 s3api put-object \
     --body ./templates/BaliNebulaLambdas.json
 
 # update the lambdas stack
-aws --region us-west-2 cloudformation update-stack \
+aws --region us-east-1 cloudformation update-stack \
     --capabilities CAPABILITY_IAM \
     --stack-name craterdog-bali-lambdas \
     --template-url https://s3.amazonaws.com/craterdog-bali-nebula-us-east-1/templates/BaliNebulaLambdas.json 
