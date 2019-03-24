@@ -2,6 +2,11 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula.",
   "Parameters": {
+    "EnvironmentBucket": {
+      "Description": "The name of the S3 bucket that contains the environment configuration files.",
+      "Type": "String",
+      "Default": "craterdog-bali-nebula-us-east-1"
+    },
     "NebulaColor": {
       "Description": "The color of the Bali Nebula.",
       "Type": "String",
@@ -19,14 +24,14 @@
     }
   },
   "Resources": {
-    "GatewayRestApi": {
+    "RepositoryRestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
         "Name": "Nebula API",
         "Description": "This API allows a client application to interact with the Bali Nebula."
       }
     },
-    "LambdaRole": {
+    "RepositoryLambdaRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -70,7 +75,7 @@
                           },
                           ":log-group:/lambda/",
                           {
-                            "Ref": "GatewayRestApi"
+                            "Ref": "RepositoryRestApi"
                           },
                           "/*"
                         ]
@@ -84,15 +89,15 @@
         ]
       }
     },
-    "GatewayLambda": {
+    "RepositoryLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Description": "This lambda function implements the Bali Cloud accounting gateway functionality.",
+        "Description": "This lambda function implements the Bali Nebula Repository API.",
         "FunctionName": {
           "Fn::Join": [
             "",
             [
-              "bali-accounting-gateway-",
+              "bali-nebula-repository-",
               {
                 "Ref": "NebulaColor"
               }
@@ -103,47 +108,35 @@
           "Variables": {
             "NebulaColor": {
               "Ref": "NebulaColor"
-            },
-            "RequestQueueUrl": {
-              "Ref": "RequestQueue"
-            },
-            "CertificateRegistryUrl": "http://certificates.balicloud.net"
+            }
           }
         },
         "Code": {
           "S3Bucket": {
-            "Fn::Join": [
-              "",
-              [
-                "craterdog-bali-nebula-",
-                {
-                  "Ref": "AWS::Region"
-                }
-              ]
-            ]
+            "Ref": "EnvironmentBucket"
           },
-          "S3Key": "lambdas/BaliNebulaAPI.zip"
+          "S3Key": "lambdas/BaliNebulaRepository.zip"
         },
-        "Handler": "bali.accounting.AccountingGatewayHandler::handle",
+        "Handler": "bali-nebula-repository.handler",
         "MemorySize": 128,
         "Role": {
           "Fn::GetAtt": [
-            "GatewayLambdaRole",
+            "RepositoryLambdaRole",
             "Arn"
           ]
         },
-        "Runtime": "java8",
-        "Timeout": 2
+        "Runtime": "nodejs8.10",
+        "Timeout": 3
       }
     },
-    "GatewayLambdaPermission": {
+    "RepositoryLambdaPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Principal": "apigateway.amazonaws.com",
         "Action": "lambda:invokeFunction",
         "FunctionName": {
           "Fn::GetAtt": [
-            "GatewayLambda",
+            "RepositoryLambda",
             "Arn"
           ]
         },
@@ -161,7 +154,7 @@
               },
               ":",
               {
-                "Ref": "GatewayRestApi"
+                "Ref": "RepositoryRestApi"
               },
               "/*"
             ]
@@ -169,36 +162,35 @@
         }
       }
     },
-    "OpenAccountResource": {
+    "CertificateResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "RestApiId": {
-          "Ref": "GatewayRestApi"
+          "Ref": "RepositoryRestApi"
         },
         "ParentId": {
           "Fn::GetAtt": [
-            "GatewayRestApi",
+            "RepositoryRestApi",
             "RootResourceId"
           ]
         },
-        "PathPart": "open-account"
+        "PathPart": "certificate"
       }
     },
-    "OpenAccountMethod": {
+    "PingCertificateMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
-          "Ref": "GatewayRestApi"
+          "Ref": "RepositoryRestApi"
         },
         "ResourceId": {
-          "Ref": "OpenAccountResource"
+          "Ref": "CertificateResource"
         },
-        "HttpMethod": "POST",
+        "HttpMethod": "HEAD",
         "AuthorizationType": "NONE",
         "Integration": {
-          "Type": "AWS",
-          "IntegrationHttpMethod": "POST",
-          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "HEAD",
           "Uri": {
             "Fn::Join": [
               "",
@@ -210,7 +202,7 @@
                 ":lambda:path/2015-03-31/functions/",
                 {
                   "Fn::GetAtt": [
-                    "GatewayLambda",
+                    "RepositoryLambda",
                     "Arn"
                   ]
                 },
@@ -218,33 +210,176 @@
               ]
             ]
           }
+        }
+      }
+    },
+    "PostCertificateMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RepositoryRestApi"
         },
-        "MethodResponses": [
-          {
-            "StatusCode": 202
+        "ResourceId": {
+          "Ref": "CertificateResource"
+        },
+        "HttpMethod": "POST",
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "RepositoryLambda",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
           }
-        ]
+        }
+      }
+    },
+    "GetCertificateMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RepositoryRestApi"
+        },
+        "ResourceId": {
+          "Ref": "CertificateResource"
+        },
+        "HttpMethod": "GET",
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "GET",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "RepositoryLambda",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "PutCertificateMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RepositoryRestApi"
+        },
+        "ResourceId": {
+          "Ref": "CertificateResource"
+        },
+        "HttpMethod": "PUT",
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "PUT",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "RepositoryLambda",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "DeleteCertificateMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RepositoryRestApi"
+        },
+        "ResourceId": {
+          "Ref": "CertificateResource"
+        },
+        "HttpMethod": "DELETE",
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "DELETE",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "RepositoryLambda",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        }
       }
     },
     "RestApiDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
-          "Ref": "GatewayRestApi"
+          "Ref": "RepositoryRestApi"
         },
         "StageName": {
           "Ref": "NebulaColor"
         }
       },
       "DependsOn": [
-        "OpenAccountMethod"
+        "PingCertificateMethod",
+        "PostCertificateMethod",
+        "GetCertificateMethod",
+        "PutCertificateMethod",
+        "DeleteCertificateMethod"
       ]
     }
   },
   "Outputs": {
     "ApiId": {
       "Value": {
-        "Ref": "GatewayRestApi"
+        "Ref": "RepositoryRestApi"
       }
     }
   }
