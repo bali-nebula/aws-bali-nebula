@@ -9,12 +9,12 @@ aws --region us-east-1 s3api put-object \
 # copy the latest version of the template out to S3
 aws --region us-east-1 s3api put-object \
     --bucket craterdog-bali-nebula-us-east-1 \
-    --key templates/BaliNebulaLambdas.json \
-    --body templates/BaliNebulaLambdas.json
+    --key templates/BaliNebulaRepository.json \
+    --body templates/BaliNebulaRepository.json
 
 # update the lambdas stack
-aws --region us-east-1 cloudformation update-stack \
+aws --region us-east-1 cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
-    --stack-name craterdog-bali-lambdas \
-    --template-url https://s3.amazonaws.com/craterdog-bali-nebula-us-east-1/templates/BaliNebulaLambdas.json 
+    --stack-name craterdog-bali-repository \
+    --template-url https://s3.amazonaws.com/craterdog-bali-nebula-us-east-1/templates/BaliNebulaRepository.json 
 

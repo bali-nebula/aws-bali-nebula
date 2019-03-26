@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula.",
+  "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula Repository.",
   "Parameters": {
     "EnvironmentBucket": {
       "Description": "The name of the S3 bucket that contains the environment configuration files.",
@@ -20,7 +20,7 @@
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
         "Name": "Nebula API",
-        "Description": "This API allows a client application to interact with the Bali Nebula."
+        "Description": "This API allows a client application to interact with the Bali Nebula Repository."
       }
     },
     "RepositoryAPIDeployment": {
@@ -51,7 +51,7 @@
             }
           ]
         },
-        "Path": "/service-role/",
+        "Path": "/",
         "Policies": [
           {
             "PolicyName": "LambdaPolicy",
