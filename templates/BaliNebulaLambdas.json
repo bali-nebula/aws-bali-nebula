@@ -31,11 +31,11 @@
         }
       },
       "DependsOn": [
-        "PingCertificateMethod",
-        "PostCertificateMethod",
-        "GetCertificateMethod",
-        "PutCertificateMethod",
-        "DeleteCertificateMethod"
+        "PingMethod",
+        "PostMethod",
+        "GetMethod",
+        "PutMethod",
+        "DeleteMethod"
       ]
     },
     "RepositoryLambdaRole": {
@@ -63,12 +63,54 @@
                   "Action": [
                     "s3:HeadObject",
                     "s3:PostObject",
+                    "s3:GetObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-bali-certificates-us-west-2/*"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:HeadObject",
+                    "s3:PostObject",
+                    "s3:GetObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-bali-types-us-west-2/*"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:HeadObject",
                     "s3:GetObject",
                     "s3:PutObject",
                     "s3:DeleteObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-certificates-us-west-2/*"
+                    "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:HeadObject",
+                    "s3:PostObject",
+                    "s3:GetObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-bali-queues-us-west-2/*"
                   ]
                 },
                 {
@@ -166,7 +208,7 @@
         }
       }
     },
-    "CertificateResource": {
+    "TypeResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "RestApiId": {
@@ -178,33 +220,34 @@
             "RootResourceId"
           ]
         },
-        "PathPart": "certificate"
+        "PathPart": "{type}"
       }
     },
-    "CertificateIdentifierResource": {
+    "IdentifierResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "RestApiId": {
           "Ref": "RepositoryAPI"
         },
         "ParentId": {
-          "Ref": "CertificateResource"
+          "Ref": "TypeResource"
         },
         "PathPart": "{identifier}"
       }
     },
-    "PingCertificateMethod": {
+    "PingMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
           "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateIdentifierResource"
+          "Ref": "IdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "HEAD",
         "RequestParameters": {
+          "method.request.path.type": true,
           "method.request.path.identifier": true
         },
         "Integration": {
@@ -232,18 +275,19 @@
         }
       }
     },
-    "PostCertificateMethod": {
+    "PostMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
           "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateIdentifierResource"
+          "Ref": "IdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "POST",
         "RequestParameters": {
+          "method.request.path.type": true,
           "method.request.path.identifier": true
         },
         "Integration": {
@@ -271,18 +315,19 @@
         }
       }
     },
-    "GetCertificateMethod": {
+    "GetMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
           "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateIdentifierResource"
+          "Ref": "IdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "GET",
         "RequestParameters": {
+          "method.request.path.type": true,
           "method.request.path.identifier": true
         },
         "Integration": {
@@ -310,18 +355,19 @@
         }
       }
     },
-    "PutCertificateMethod": {
+    "PutMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
           "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateIdentifierResource"
+          "Ref": "IdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "PUT",
         "RequestParameters": {
+          "method.request.path.type": true,
           "method.request.path.identifier": true
         },
         "Integration": {
@@ -349,18 +395,19 @@
         }
       }
     },
-    "DeleteCertificateMethod": {
+    "DeleteMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
           "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateIdentifierResource"
+          "Ref": "IdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "DELETE",
         "RequestParameters": {
+          "method.request.path.type": true,
           "method.request.path.identifier": true
         },
         "Integration": {
