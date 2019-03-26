@@ -6,30 +6,37 @@
       "Description": "The name of the S3 bucket that contains the environment configuration files.",
       "Type": "String",
       "Default": "craterdog-bali-nebula-us-east-1"
-    },
-    "NebulaColor": {
-      "Description": "The color of the Bali Nebula.",
-      "Type": "String",
-      "Default": "blue",
-      "AllowedValues" : ["blue", "green"],
-      "ConstraintDescription" : "You must specify either 'blue' or 'green'."
     }
   },
-  "Conditions": {
-    "IsBlue" : {
-       "Fn::Equals": [
-          {"Ref": "NebulaColor"},
-          "blue"
-       ]
+  "Outputs": {
+    "ApiId": {
+      "Value": {
+        "Ref": "RepositoryAPI"
+      }
     }
   },
   "Resources": {
-    "RepositoryRestApi": {
+    "RepositoryAPI": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
         "Name": "Nebula API",
         "Description": "This API allows a client application to interact with the Bali Nebula."
       }
+    },
+    "RepositoryAPIDeployment": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RepositoryAPI"
+        }
+      },
+      "DependsOn": [
+        "PingCertificateMethod",
+        "PostCertificateMethod",
+        "GetCertificateMethod",
+        "PutCertificateMethod",
+        "DeleteCertificateMethod"
+      ]
     },
     "RepositoryLambdaRole": {
       "Type": "AWS::IAM::Role",
@@ -40,19 +47,30 @@
             {
               "Action": ["sts:AssumeRole"],
               "Effect": "Allow",
-              "Principal": {
-                "Service": ["lambda.amazonaws.com"]
-              }
+              "Principal": { "Service": ["lambda.amazonaws.com"] }
             }
           ]
         },
-        "Path": "/",
+        "Path": "/service-role/",
         "Policies": [
           {
             "PolicyName": "LambdaPolicy",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:HeadObject",
+                    "s3:PostObject",
+                    "s3:GetObject",
+                    "s3:PutObject",
+                    "s3:DeleteObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-bali-certificates-us-west-2/*"
+                  ]
+                },
                 {
                   "Effect": "Allow",
                   "Action": [
@@ -73,11 +91,7 @@
                           {
                             "Ref": "AWS::AccountId"
                           },
-                          ":log-group:/lambda/",
-                          {
-                            "Ref": "RepositoryRestApi"
-                          },
-                          "/*"
+                          ":log-group:/aws/lambda/bali-nebula-repository:*"
                         ]
                       ]
                     }
@@ -89,35 +103,25 @@
         ]
       }
     },
+    "RepositoryLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/bali-nebula-repository",
+        "RetentionInDays": 1
+      }
+    },
     "RepositoryLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
+        "FunctionName": "bali-nebula-repository",
         "Description": "This lambda function implements the Bali Nebula Repository API.",
-        "FunctionName": {
-          "Fn::Join": [
-            "",
-            [
-              "bali-nebula-repository-",
-              {
-                "Ref": "NebulaColor"
-              }
-            ]
-          ]
-        },
-        "Environment": {
-          "Variables": {
-            "NebulaColor": {
-              "Ref": "NebulaColor"
-            }
-          }
-        },
         "Code": {
           "S3Bucket": {
             "Ref": "EnvironmentBucket"
           },
           "S3Key": "lambdas/BaliNebulaRepository.zip"
         },
-        "Handler": "bali-nebula-repository.handler",
+        "Handler": "BaliNebulaRepository.handler",
         "MemorySize": 128,
         "Role": {
           "Fn::GetAtt": [
@@ -133,7 +137,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Principal": "apigateway.amazonaws.com",
-        "Action": "lambda:invokeFunction",
+        "Action": "lambda:InvokeFunction",
         "FunctionName": {
           "Fn::GetAtt": [
             "RepositoryLambda",
@@ -154,7 +158,7 @@
               },
               ":",
               {
-                "Ref": "RepositoryRestApi"
+                "Ref": "RepositoryAPI"
               },
               "/*"
             ]
@@ -166,25 +170,37 @@
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "RestApiId": {
-          "Ref": "RepositoryRestApi"
+          "Ref": "RepositoryAPI"
         },
         "ParentId": {
           "Fn::GetAtt": [
-            "RepositoryRestApi",
+            "RepositoryAPI",
             "RootResourceId"
           ]
         },
         "PathPart": "certificate"
       }
     },
+    "CertificateIdentifierResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RepositoryAPI"
+        },
+        "ParentId": {
+          "Ref": "CertificateResource"
+        },
+        "PathPart": "{identifier}"
+      }
+    },
     "PingCertificateMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
-          "Ref": "RepositoryRestApi"
+          "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateResource"
+          "Ref": "CertificateIdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "HEAD",
@@ -193,7 +209,7 @@
         },
         "Integration": {
           "Type": "AWS_PROXY",
-          "IntegrationHttpMethod": "HEAD",
+          "IntegrationHttpMethod": "POST",
           "Uri": {
             "Fn::Join": [
               "",
@@ -220,10 +236,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
-          "Ref": "RepositoryRestApi"
+          "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateResource"
+          "Ref": "CertificateIdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "POST",
@@ -259,10 +275,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
-          "Ref": "RepositoryRestApi"
+          "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateResource"
+          "Ref": "CertificateIdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "GET",
@@ -271,7 +287,7 @@
         },
         "Integration": {
           "Type": "AWS_PROXY",
-          "IntegrationHttpMethod": "GET",
+          "IntegrationHttpMethod": "POST",
           "Uri": {
             "Fn::Join": [
               "",
@@ -298,10 +314,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
-          "Ref": "RepositoryRestApi"
+          "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateResource"
+          "Ref": "CertificateIdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "PUT",
@@ -310,7 +326,7 @@
         },
         "Integration": {
           "Type": "AWS_PROXY",
-          "IntegrationHttpMethod": "PUT",
+          "IntegrationHttpMethod": "POST",
           "Uri": {
             "Fn::Join": [
               "",
@@ -337,10 +353,10 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
-          "Ref": "RepositoryRestApi"
+          "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "CertificateResource"
+          "Ref": "CertificateIdentifierResource"
         },
         "AuthorizationType": "NONE",
         "HttpMethod": "DELETE",
@@ -349,7 +365,7 @@
         },
         "Integration": {
           "Type": "AWS_PROXY",
-          "IntegrationHttpMethod": "DELETE",
+          "IntegrationHttpMethod": "POST",
           "Uri": {
             "Fn::Join": [
               "",
@@ -370,31 +386,6 @@
             ]
           }
         }
-      }
-    },
-    "RestApiDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "RepositoryRestApi"
-        },
-        "StageName": {
-          "Ref": "NebulaColor"
-        }
-      },
-      "DependsOn": [
-        "PingCertificateMethod",
-        "PostCertificateMethod",
-        "GetCertificateMethod",
-        "PutCertificateMethod",
-        "DeleteCertificateMethod"
-      ]
-    }
-  },
-  "Outputs": {
-    "ApiId": {
-      "Value": {
-        "Ref": "RepositoryRestApi"
       }
     }
   }

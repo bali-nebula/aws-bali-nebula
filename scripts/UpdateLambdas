@@ -10,7 +10,7 @@ aws --region us-east-1 s3api put-object \
 aws --region us-east-1 s3api put-object \
     --bucket craterdog-bali-nebula-us-east-1 \
     --key templates/BaliNebulaLambdas.json \
-    --body ./templates/BaliNebulaLambdas.json
+    --body templates/BaliNebulaLambdas.json
 
 # update the lambdas stack
 aws --region us-east-1 cloudformation update-stack \
