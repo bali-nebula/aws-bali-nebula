@@ -31,11 +31,7 @@
         }
       },
       "DependsOn": [
-        "PingMethod",
-        "PostMethod",
-        "GetMethod",
-        "PutMethod",
-        "DeleteMethod"
+        "ProxyMethod"
       ]
     },
     "RepositoryLambdaRole": {
@@ -172,7 +168,7 @@
           ]
         },
         "Runtime": "nodejs8.10",
-        "Timeout": 3
+        "Timeout": 5
       }
     },
     "RepositoryLambdaPermission": {
@@ -208,7 +204,7 @@
         }
       }
     },
-    "TypeResource": {
+    "ProxyResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "RestApiId": {
@@ -220,196 +216,20 @@
             "RootResourceId"
           ]
         },
-        "PathPart": "{type}"
+        "PathPart": "{proxy+}"
       }
     },
-    "IdentifierResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "RepositoryAPI"
-        },
-        "ParentId": {
-          "Ref": "TypeResource"
-        },
-        "PathPart": "{identifier}"
-      }
-    },
-    "PingMethod": {
+    "ProxyMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "RestApiId": {
           "Ref": "RepositoryAPI"
         },
         "ResourceId": {
-          "Ref": "IdentifierResource"
+          "Ref": "ProxyResource"
         },
         "AuthorizationType": "NONE",
-        "HttpMethod": "HEAD",
-        "RequestParameters": {
-          "method.request.path.type": true,
-          "method.request.path.identifier": true
-        },
-        "Integration": {
-          "Type": "AWS_PROXY",
-          "IntegrationHttpMethod": "POST",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:aws:apigateway:",
-                {
-                  "Ref": "AWS::Region"
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "RepositoryLambda",
-                    "Arn"
-                  ]
-                },
-                "/invocations"
-              ]
-            ]
-          }
-        }
-      }
-    },
-    "PostMethod": {
-      "Type": "AWS::ApiGateway::Method",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "RepositoryAPI"
-        },
-        "ResourceId": {
-          "Ref": "IdentifierResource"
-        },
-        "AuthorizationType": "NONE",
-        "HttpMethod": "POST",
-        "RequestParameters": {
-          "method.request.path.type": true,
-          "method.request.path.identifier": true
-        },
-        "Integration": {
-          "Type": "AWS_PROXY",
-          "IntegrationHttpMethod": "POST",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:aws:apigateway:",
-                {
-                  "Ref": "AWS::Region"
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "RepositoryLambda",
-                    "Arn"
-                  ]
-                },
-                "/invocations"
-              ]
-            ]
-          }
-        }
-      }
-    },
-    "GetMethod": {
-      "Type": "AWS::ApiGateway::Method",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "RepositoryAPI"
-        },
-        "ResourceId": {
-          "Ref": "IdentifierResource"
-        },
-        "AuthorizationType": "NONE",
-        "HttpMethod": "GET",
-        "RequestParameters": {
-          "method.request.path.type": true,
-          "method.request.path.identifier": true
-        },
-        "Integration": {
-          "Type": "AWS_PROXY",
-          "IntegrationHttpMethod": "POST",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:aws:apigateway:",
-                {
-                  "Ref": "AWS::Region"
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "RepositoryLambda",
-                    "Arn"
-                  ]
-                },
-                "/invocations"
-              ]
-            ]
-          }
-        }
-      }
-    },
-    "PutMethod": {
-      "Type": "AWS::ApiGateway::Method",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "RepositoryAPI"
-        },
-        "ResourceId": {
-          "Ref": "IdentifierResource"
-        },
-        "AuthorizationType": "NONE",
-        "HttpMethod": "PUT",
-        "RequestParameters": {
-          "method.request.path.type": true,
-          "method.request.path.identifier": true
-        },
-        "Integration": {
-          "Type": "AWS_PROXY",
-          "IntegrationHttpMethod": "POST",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:aws:apigateway:",
-                {
-                  "Ref": "AWS::Region"
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "RepositoryLambda",
-                    "Arn"
-                  ]
-                },
-                "/invocations"
-              ]
-            ]
-          }
-        }
-      }
-    },
-    "DeleteMethod": {
-      "Type": "AWS::ApiGateway::Method",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "RepositoryAPI"
-        },
-        "ResourceId": {
-          "Ref": "IdentifierResource"
-        },
-        "AuthorizationType": "NONE",
-        "HttpMethod": "DELETE",
-        "RequestParameters": {
-          "method.request.path.type": true,
-          "method.request.path.identifier": true
-        },
+        "HttpMethod": "ANY",
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "POST",
