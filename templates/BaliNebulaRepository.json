@@ -10,25 +10,21 @@
   },
   "Outputs": {
     "ApiId": {
-      "Value": {
-        "Ref": "RepositoryAPI"
-      }
+      "Value": { "Ref": "RepositoryAPI" }
     }
   },
   "Resources": {
     "RepositoryAPI": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "Nebula API",
+        "Name": "Nebula Repository API",
         "Description": "This API allows a client application to interact with the Bali Nebula Repository."
       }
     },
     "RepositoryAPIDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
-        "RestApiId": {
-          "Ref": "RepositoryAPI"
-        }
+        "RestApiId": { "Ref": "RepositoryAPI" }
       },
       "DependsOn": [
         "ProxyMethod"
@@ -62,18 +58,9 @@
                     "s3:GetObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-certificates-us-west-2/*"
-                  ]
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "s3:HeadObject",
-                    "s3:PostObject",
-                    "s3:GetObject"
-                  ],
-                  "Resource": [
-                    "arn:aws:s3:::craterdog-bali-types-us-west-2/*"
+                    "arn:aws:s3:::craterdog-bali-certificates-us-west-2/*",
+                    "arn:aws:s3:::craterdog-bali-types-us-west-2/*",
+                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*"
                   ]
                 },
                 {
@@ -84,20 +71,7 @@
                     "s3:PutObject",
                     "s3:DeleteObject"
                   ],
-                  "Resource": [
-                    "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*"
-                  ]
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "s3:HeadObject",
-                    "s3:PostObject",
-                    "s3:GetObject"
-                  ],
-                  "Resource": [
-                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*"
-                  ]
+                  "Resource": [ "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*" ]
                 },
                 {
                   "Effect": "Allow",
@@ -105,9 +79,7 @@
                     "s3:GetObject",
                     "s3:PutObject"
                   ],
-                  "Resource": [
-                    "arn:aws:s3:::craterdog-bali-queues-us-west-2/*"
-                  ]
+                  "Resource": [ "arn:aws:s3:::craterdog-bali-queues-us-west-2/*" ]
                 },
                 {
                   "Effect": "Allow",
@@ -116,24 +88,7 @@
                     "logs:CreateLogStream",
                     "logs:PutLogEvents"
                   ],
-                  "Resource": [
-                    {
-                      "Fn::Join": [
-                        "",
-                        [
-                          "arn:aws:logs:",
-                          {
-                            "Ref": "AWS::Region"
-                          },
-                          ":",
-                          {
-                            "Ref": "AWS::AccountId"
-                          },
-                          ":log-group:/aws/lambda/bali-nebula-repository:*"
-                        ]
-                      ]
-                    }
-                  ]
+                  "Resource": [ { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/bali-nebula-repository:*" } ]
                 }
               ]
             }
@@ -154,9 +109,7 @@
         "FunctionName": "bali-nebula-repository",
         "Description": "This lambda function implements the Bali Nebula Repository API.",
         "Code": {
-          "S3Bucket": {
-            "Ref": "EnvironmentBucket"
-          },
+          "S3Bucket": { "Ref": "EnvironmentBucket" },
           "S3Key": "lambdas/BaliNebulaRepository.zip"
         },
         "Handler": "BaliNebulaRepository.handler",
@@ -182,34 +135,13 @@
             "Arn"
           ]
         },
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:aws:execute-api:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":",
-              {
-                "Ref": "RepositoryAPI"
-              },
-              "/*"
-            ]
-          ]
-        }
+        "SourceArn": { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RepositoryAPI}/*" }
       }
     },
     "ProxyResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
-        "RestApiId": {
-          "Ref": "RepositoryAPI"
-        },
+        "RestApiId": { "Ref": "RepositoryAPI" },
         "ParentId": {
           "Fn::GetAtt": [
             "RepositoryAPI",
@@ -222,36 +154,14 @@
     "ProxyMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "RestApiId": {
-          "Ref": "RepositoryAPI"
-        },
-        "ResourceId": {
-          "Ref": "ProxyResource"
-        },
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "ResourceId": { "Ref": "ProxyResource" },
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "POST",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:aws:apigateway:",
-                {
-                  "Ref": "AWS::Region"
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "RepositoryLambda",
-                    "Arn"
-                  ]
-                },
-                "/invocations"
-              ]
-            ]
-          }
+          "Uri": { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RepositoryLambda.Arn}/invocations" }
         }
       }
     }
