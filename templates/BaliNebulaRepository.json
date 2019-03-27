@@ -2,6 +2,12 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula Repository.",
   "Parameters": {
+    "EnvironmentColor": {
+      "Description": "The color of the deployment environment.",
+      "Type": "String",
+      "AllowedValues" : ["blue", "green"],
+      "Default": "blue"
+    },
     "EnvironmentBucket": {
       "Description": "The name of the S3 bucket that contains the environment configuration files.",
       "Type": "String",
@@ -24,11 +30,24 @@
     "RepositoryAPIDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
-        "RestApiId": { "Ref": "RepositoryAPI" }
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "StageName": { "Ref": "EnvironmentColor" },
+        "StageDescription": {
+          "Description" : { "Fn::Sub": "This deployment runs the Bali Nebula Repository in the ${EnvironmentColor} environment." },
+          "Variables" : { "EnvironmentColor": { "Ref": "EnvironmentColor" } },
+          "LoggingLevel" : "ERROR",
+          "MetricsEnabled" : false,
+          "TracingEnabled" : false,
+          "ThrottlingBurstLimit" : 100,
+          "ThrottlingRateLimit" : 1000,
+          "CachingEnabled" : false,
+          "CacheClusterEnabled" : false,
+          "CacheClusterSize" : "0.5",
+          "CacheDataEncrypted" : false,
+          "CacheTtlInSeconds" : 300
+        }
       },
-      "DependsOn": [
-        "ProxyMethod"
-      ]
+      "DependsOn": [ "ProxyMethod" ]
     },
     "RepositoryLambdaRole": {
       "Type": "AWS::IAM::Role",
