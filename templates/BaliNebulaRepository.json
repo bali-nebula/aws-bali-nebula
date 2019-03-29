@@ -2,12 +2,6 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula Repository.",
   "Parameters": {
-    "EnvironmentColor": {
-      "Description": "The color of the deployment environment.",
-      "Type": "String",
-      "AllowedValues" : ["blue", "green"],
-      "Default": "blue"
-    },
     "EnvironmentBucket": {
       "Description": "The name of the S3 bucket that contains the environment configuration files.",
       "Type": "String",
@@ -20,6 +14,26 @@
     }
   },
   "Resources": {
+    "RepositoryDomain": {
+      "Type": "AWS::ApiGateway::DomainName",
+      "Properties": {
+        "RegionalCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/066d667f-ec36-486f-9fca-42136deb31bd",
+        "DomainName": "bali-nebula.net",
+        "EndpointConfiguration" : {
+          "Types" : [ "REGIONAL" ]
+        }
+      }
+    },
+    "BlueRepositoryPath": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "DependsOn": [ "RepositoryDomain", "BlueRepository" ],
+      "Properties": {
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "DomainName": "bali-nebula.net",
+        "BasePath": "repository",
+        "Stage": "blue"
+      }
+    },
     "RepositoryAPI": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
@@ -27,14 +41,39 @@
         "Description": "This API allows a client application to interact with the Bali Nebula Repository."
       }
     },
-    "RepositoryAPIDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
+    "ProxyResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "DependsOn": [ "RepositoryAPI" ],
       "Properties": {
         "RestApiId": { "Ref": "RepositoryAPI" },
-        "StageName": { "Ref": "EnvironmentColor" },
+        "ParentId": { "Fn::GetAtt": [ "RepositoryAPI", "RootResourceId" ] },
+        "PathPart": "{proxy+}"
+      }
+    },
+    "ProxyMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "DependsOn": [ "ProxyResource" ],
+      "Properties": {
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "ResourceId": { "Ref": "ProxyResource" },
+        "AuthorizationType": "NONE",
+        "HttpMethod": "ANY",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RepositoryLambda.Arn}/invocations" }
+        }
+      }
+    },
+    "BlueRepository": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "DependsOn": [ "ProxyMethod" ],
+      "Properties": {
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "StageName": "blue",
         "StageDescription": {
-          "Description" : { "Fn::Sub": "This deployment runs the Bali Nebula Repository in the ${EnvironmentColor} environment." },
-          "Variables" : { "EnvironmentColor": { "Ref": "EnvironmentColor" } },
+          "Description" : "This deployment runs the Bali Nebula Repository in the blue environment.",
+          "Variables" : { "EnvironmentColor": "blue" },
           "LoggingLevel" : "ERROR",
           "MetricsEnabled" : false,
           "TracingEnabled" : false,
@@ -46,8 +85,7 @@
           "CacheDataEncrypted" : false,
           "CacheTtlInSeconds" : 300
         }
-      },
-      "DependsOn": [ "ProxyMethod" ]
+      }
     },
     "RepositoryLambdaRole": {
       "Type": "AWS::IAM::Role",
@@ -90,7 +128,9 @@
                     "s3:PutObject",
                     "s3:DeleteObject"
                   ],
-                  "Resource": [ "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*" ]
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*"
+                  ]
                 },
                 {
                   "Effect": "Allow",
@@ -98,7 +138,9 @@
                     "s3:GetObject",
                     "s3:PutObject"
                   ],
-                  "Resource": [ "arn:aws:s3:::craterdog-bali-queues-us-west-2/*" ]
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-bali-queues-us-west-2/*"
+                  ]
                 },
                 {
                   "Effect": "Allow",
@@ -107,7 +149,9 @@
                     "logs:CreateLogStream",
                     "logs:PutLogEvents"
                   ],
-                  "Resource": [ { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/bali-nebula-repository:*" } ]
+                  "Resource": [
+                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/bali-nebula-repository:*" }
+                  ]
                 }
               ]
             }
@@ -124,6 +168,7 @@
     },
     "RepositoryLambda": {
       "Type": "AWS::Lambda::Function",
+      "DependsOn": [ "RepositoryLambdaRole" ],
       "Properties": {
         "FunctionName": "bali-nebula-repository",
         "Description": "This lambda function implements the Bali Nebula Repository API.",
@@ -133,54 +178,33 @@
         },
         "Handler": "BaliNebulaRepository.handler",
         "MemorySize": 128,
-        "Role": {
-          "Fn::GetAtt": [
-            "RepositoryLambdaRole",
-            "Arn"
-          ]
-        },
+        "Role": { "Fn::GetAtt": [ "RepositoryLambdaRole", "Arn" ] },
         "Runtime": "nodejs8.10",
         "Timeout": 5
       }
     },
     "RepositoryLambdaPermission": {
       "Type": "AWS::Lambda::Permission",
+      "DependsOn": [ "RepositoryLambda" ],
       "Properties": {
         "Principal": "apigateway.amazonaws.com",
         "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "RepositoryLambda",
-            "Arn"
-          ]
-        },
+        "FunctionName": { "Fn::GetAtt": [ "RepositoryLambda", "Arn" ] },
         "SourceArn": { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RepositoryAPI}/*" }
       }
     },
-    "ProxyResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": { "Ref": "RepositoryAPI" },
-        "ParentId": {
-          "Fn::GetAtt": [
-            "RepositoryAPI",
-            "RootResourceId"
-          ]
-        },
-        "PathPart": "{proxy+}"
-      }
-    },
-    "ProxyMethod": {
-      "Type": "AWS::ApiGateway::Method",
-      "Properties": {
-        "RestApiId": { "Ref": "RepositoryAPI" },
-        "ResourceId": { "Ref": "ProxyResource" },
-        "AuthorizationType": "NONE",
-        "HttpMethod": "ANY",
-        "Integration": {
-          "Type": "AWS_PROXY",
-          "IntegrationHttpMethod": "POST",
-          "Uri": { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RepositoryLambda.Arn}/invocations" }
+    "RepositoryRouting": {
+      "Type" : "AWS::Route53::RecordSet",
+      "DependsOn": [ "BlueRepositoryPath" ],
+      "Properties" : {
+        "Name": "bali-nebula.net.",
+        "Comment" : "Route all repository requests to the repository API gateway endpoint,",
+        "Type" : "A",
+        "HostedZoneName" : "bali-nebula.net.",
+        "AliasTarget" : {
+          "DNSName": { "Fn::GetAtt": [ "RepositoryDomain", "RegionalDomainName" ] },
+          "EvaluateTargetHealth" : false,
+          "HostedZoneId" : "Z1UJRXOUMOOFQ8"
         }
       }
     }
