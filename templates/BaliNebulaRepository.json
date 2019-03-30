@@ -14,16 +14,6 @@
     }
   },
   "Resources": {
-    "BlueRepositoryPath": {
-      "Type": "AWS::ApiGateway::BasePathMapping",
-      "DependsOn": [ "BlueRepository" ],
-      "Properties": {
-        "RestApiId": { "Ref": "RepositoryAPI" },
-        "DomainName": "bali-nebula.net",
-        "BasePath": "repository",
-        "Stage": "blue"
-      }
-    },
     "RepositoryAPI": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
@@ -55,26 +45,59 @@
         }
       }
     },
-    "BlueRepository": {
+    "RepositoryDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
       "DependsOn": [ "ProxyMethod" ],
       "Properties": {
+        "RestApiId": { "Ref": "RepositoryAPI" }
+      }
+    },
+    "BlueStage": {
+      "Type": "AWS::ApiGateway::Stage",
+      "DependsOn": [ "RepositoryDeployment" ],
+      "Properties": {
+        "DeploymentId": { "Ref": "RepositoryDeployment" },
         "RestApiId": { "Ref": "RepositoryAPI" },
         "StageName": "blue",
-        "StageDescription": {
-          "Description" : "This deployment runs the Bali Nebula Repository in the blue environment.",
-          "Variables" : { "EnvironmentColor": "blue" },
-          "LoggingLevel" : "ERROR",
-          "MetricsEnabled" : false,
-          "TracingEnabled" : false,
-          "ThrottlingBurstLimit" : 100,
-          "ThrottlingRateLimit" : 1000,
-          "CachingEnabled" : false,
-          "CacheClusterEnabled" : false,
-          "CacheClusterSize" : "0.5",
-          "CacheDataEncrypted" : false,
-          "CacheTtlInSeconds" : 300
-        }
+        "Description" : "This stage deploys the Bali Nebula Repository in the blue environment.",
+        "Variables" : { "EnvironmentColor": "blue" },
+        "TracingEnabled" : false,
+        "CacheClusterEnabled" : false,
+        "CacheClusterSize" : "0.5"
+      }
+    },
+    "BluePath": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "DependsOn": [ "BlueStage" ],
+      "Properties": {
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "DomainName": "bali-nebula.net",
+        "BasePath": "repository",
+        "Stage": "blue"
+      }
+    },
+    "GreenStage": {
+      "Type": "AWS::ApiGateway::Stage",
+      "DependsOn": [ "RepositoryDeployment" ],
+      "Properties": {
+        "DeploymentId": { "Ref": "RepositoryDeployment" },
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "StageName": "green",
+        "Description" : "This stage deploys the Bali Nebula Repository in the green environment.",
+        "Variables" : { "EnvironmentColor": "green" },
+        "TracingEnabled" : false,
+        "CacheClusterEnabled" : false,
+        "CacheClusterSize" : "0.5"
+      }
+    },
+    "GreenPath": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "DependsOn": [ "GreenStage" ],
+      "Properties": {
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "DomainName": "bali-nebula.net",
+        "BasePath": "test",
+        "Stage": "green"
       }
     },
     "RepositoryLambdaRole": {
