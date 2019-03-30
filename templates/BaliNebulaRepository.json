@@ -110,7 +110,6 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "s3:HeadObject",
                     "s3:PutObject",
                     "s3:GetObject"
                   ],
@@ -123,7 +122,6 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "s3:HeadObject",
                     "s3:PutObject",
                     "s3:GetObject",
                     "s3:DeleteObject"
@@ -135,8 +133,18 @@
                 {
                   "Effect": "Allow",
                   "Action": [
+                    "s3:ListBucket"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-bali-queues-us-west-2"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
                     "s3:PutObject",
-                    "s3:GetObject"
+                    "s3:GetObject",
+                    "s3:DeleteObject"
                   ],
                   "Resource": [
                     "arn:aws:s3:::craterdog-bali-queues-us-west-2/*"
