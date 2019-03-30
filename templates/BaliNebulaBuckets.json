@@ -1,18 +1,11 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This cloud formation template is used to setup the S3 buckets for the Bali Nebula.",
-  "Parameters": {
-    "LoggingBucket": {
-      "Description": "The name of the S3 bucket in which all log entries are stored.",
-      "Type": "String",
-      "Default": "craterdog-bali-logs-us-east-1"
-    }
-  },
   "Resources": {
-    "BackupBucket": {
+    "LogBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-backups-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-bali-logs-${AWS::Region}" },
         "AccessControl": "Private",
         "VersioningConfiguration": {
           "Status": "Enabled"

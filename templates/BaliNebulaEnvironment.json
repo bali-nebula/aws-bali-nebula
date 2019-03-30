@@ -5,7 +5,7 @@
     "BackupBucket": {
       "Description": "The name of the bucket that is used for storing backups.",
       "Type": "String",
-      "Default": "craterdog-bali-backups-us-west-2"
+      "Default": "craterdog-bali-logs-us-west-2"
     }
   },
   "Resources": {
