@@ -90,6 +90,12 @@
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-logs-${AWS::Region}" },
         "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        },
         "VersioningConfiguration": {
           "Status": "Enabled"
         },
@@ -163,7 +169,13 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-environment-${AWS::Region}" },
-        "AccessControl": "Private"
+        "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        }
       }
     }
   }

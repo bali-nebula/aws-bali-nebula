@@ -7,6 +7,12 @@
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-logs-${AWS::Region}" },
         "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        },
         "VersioningConfiguration": {
           "Status": "Enabled"
         },
@@ -26,7 +32,13 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-certificates-${AWS::Region}" },
-        "AccessControl": "Private"
+        "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        }
       }
     },
     "DraftsBucket": {
@@ -34,6 +46,12 @@
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-drafts-${AWS::Region}" },
         "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        },
         "VersioningConfiguration": {
           "Status": "Enabled"
         },
@@ -53,21 +71,39 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-documents-${AWS::Region}" },
-        "AccessControl": "Private"
+        "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        }
       }
     },
     "TypesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-types-${AWS::Region}" },
-        "AccessControl": "Private"
+        "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        }
       }
     },
     "QueuesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-queues-${AWS::Region}" },
-        "AccessControl": "Private"
+        "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        }
       }
     }
   }
