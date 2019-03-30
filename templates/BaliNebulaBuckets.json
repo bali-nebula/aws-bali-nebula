@@ -12,17 +12,7 @@
     "BackupBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": {
-          "Fn::Join": [
-            "",
-            [
-              "craterdog-bali-backups-",
-              {
-                "Ref": "AWS::Region"
-              }
-            ]
-          ]
-        },
+        "BucketName": { "Fn::Sub": "craterdog-bali-backups-${AWS::Region}" },
         "AccessControl": "Private",
         "VersioningConfiguration": {
           "Status": "Enabled"
@@ -42,34 +32,14 @@
     "CertificatesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": {
-          "Fn::Join": [
-            "",
-            [
-              "craterdog-bali-certificates-",
-              {
-                "Ref": "AWS::Region"
-              }
-            ]
-          ]
-        },
+        "BucketName": { "Fn::Sub": "craterdog-bali-certificates-${AWS::Region}" },
         "AccessControl": "Private"
       }
     },
     "DraftsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": {
-          "Fn::Join": [
-            "",
-            [
-              "craterdog-bali-drafts-",
-              {
-                "Ref": "AWS::Region"
-              }
-            ]
-          ]
-        },
+        "BucketName": { "Fn::Sub": "craterdog-bali-drafts-${AWS::Region}" },
         "AccessControl": "Private",
         "VersioningConfiguration": {
           "Status": "Enabled"
@@ -89,51 +59,21 @@
     "DocumentsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": {
-          "Fn::Join": [
-            "-",
-            [
-              "craterdog-bali-documents",
-              {
-                "Ref": "AWS::Region"
-              }
-            ]
-          ]
-        },
+        "BucketName": { "Fn::Sub": "craterdog-bali-documents-${AWS::Region}" },
         "AccessControl": "Private"
       }
     },
     "TypesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": {
-          "Fn::Join": [
-            "-",
-            [
-              "craterdog-bali-types",
-              {
-                "Ref": "AWS::Region"
-              }
-            ]
-          ]
-        },
+        "BucketName": { "Fn::Sub": "craterdog-bali-types-${AWS::Region}" },
         "AccessControl": "Private"
       }
     },
     "QueuesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": {
-          "Fn::Join": [
-            "-",
-            [
-              "craterdog-bali-queues",
-              {
-                "Ref": "AWS::Region"
-              }
-            ]
-          ]
-        },
+        "BucketName": { "Fn::Sub": "craterdog-bali-queues-${AWS::Region}" },
         "AccessControl": "Private"
       }
     }
