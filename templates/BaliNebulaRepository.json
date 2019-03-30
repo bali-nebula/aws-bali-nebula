@@ -5,7 +5,7 @@
     "EnvironmentBucket": {
       "Description": "The name of the S3 bucket that contains the environment configuration files.",
       "Type": "String",
-      "Default": "craterdog-bali-nebula-us-east-1"
+      "Default": "craterdog-bali-environment-us-east-1"
     }
   },
   "Outputs": {
@@ -14,19 +14,9 @@
     }
   },
   "Resources": {
-    "RepositoryDomain": {
-      "Type": "AWS::ApiGateway::DomainName",
-      "Properties": {
-        "RegionalCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/066d667f-ec36-486f-9fca-42136deb31bd",
-        "DomainName": "bali-nebula.net",
-        "EndpointConfiguration" : {
-          "Types" : [ "REGIONAL" ]
-        }
-      }
-    },
     "BlueRepositoryPath": {
       "Type": "AWS::ApiGateway::BasePathMapping",
-      "DependsOn": [ "RepositoryDomain", "BlueRepository" ],
+      "DependsOn": [ "BlueRepository" ],
       "Properties": {
         "RestApiId": { "Ref": "RepositoryAPI" },
         "DomainName": "bali-nebula.net",
@@ -199,21 +189,6 @@
         "Action": "lambda:InvokeFunction",
         "FunctionName": { "Fn::GetAtt": [ "RepositoryLambda", "Arn" ] },
         "SourceArn": { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RepositoryAPI}/*" }
-      }
-    },
-    "RepositoryRouting": {
-      "Type" : "AWS::Route53::RecordSet",
-      "DependsOn": [ "BlueRepositoryPath" ],
-      "Properties" : {
-        "Name": "bali-nebula.net.",
-        "Comment" : "Route all repository requests to the repository API gateway endpoint,",
-        "Type" : "A",
-        "HostedZoneName" : "bali-nebula.net.",
-        "AliasTarget" : {
-          "DNSName": { "Fn::GetAtt": [ "RepositoryDomain", "RegionalDomainName" ] },
-          "EvaluateTargetHealth" : false,
-          "HostedZoneId" : "Z1UJRXOUMOOFQ8"
-        }
       }
     }
   }

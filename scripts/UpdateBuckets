@@ -2,12 +2,12 @@
 
 # copy the latest version of the template out to S3
 aws --region us-east-1 s3api put-object \
-    --bucket craterdog-bali-nebula-us-east-1 \
+    --bucket craterdog-bali-environment-us-east-1 \
     --key templates/BaliNebulaBuckets.json \
     --body ./templates/BaliNebulaBuckets.json
 
 # update the environment stack
 aws --region us-west-2 cloudformation update-stack \
-    --stack-name craterdog-bali-buckets \
-    --template-url https://s3.amazonaws.com/craterdog-bali-nebula-us-east-1/templates/BaliNebulaBuckets.json 
+    --stack-name craterdog-bali-buckets-us-east-1 \
+    --template-url https://s3.amazonaws.com/craterdog-bali-environment-us-east-1/templates/BaliNebulaBuckets.json 
 

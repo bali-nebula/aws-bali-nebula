@@ -9,6 +9,31 @@
     }
   },
   "Resources": {
+    "NebulaDomain": {
+      "Type": "AWS::ApiGateway::DomainName",
+      "Properties": {
+        "RegionalCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/066d667f-ec36-486f-9fca-42136deb31bd",
+        "DomainName": "bali-nebula.net",
+        "EndpointConfiguration" : {
+          "Types" : [ "REGIONAL" ]
+        }
+      }
+    },
+    "NebulaRouting": {
+      "Type" : "AWS::Route53::RecordSet",
+      "DependsOn": [ "NebulaDomain" ],
+      "Properties" : {
+        "Name": "bali-nebula.net.",
+        "Comment" : "Route all repository requests to the repository API gateway endpoint,",
+        "Type" : "A",
+        "HostedZoneName" : "bali-nebula.net.",
+        "AliasTarget" : {
+          "DNSName": { "Fn::GetAtt": [ "NebulaDomain", "RegionalDomainName" ] },
+          "EvaluateTargetHealth" : false,
+          "HostedZoneId" : "Z1UJRXOUMOOFQ8"
+        }
+      }
+    },
     "LogReplicationRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -134,10 +159,10 @@
       },
       "DependsOn": ["LogBucketPolicy"]
     },
-    "NebulaBucket": {
+    "EnvironmentBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-nebula-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-bali-environment-${AWS::Region}" },
         "AccessControl": "Private"
       }
     }
