@@ -1,13 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula Repository.",
-  "Parameters": {
-    "EnvironmentBucket": {
-      "Description": "The name of the S3 bucket that contains the environment configuration files.",
-      "Type": "String",
-      "Default": "craterdog-bali-environment-us-east-1"
-    }
-  },
   "Outputs": {
     "ApiId": {
       "Value": { "Ref": "RepositoryAPI" }
@@ -100,7 +93,7 @@
         "Stage": "green"
       }
     },
-    "RepositoryLambdaRole": {
+    "RepositoryRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -140,7 +133,8 @@
                     "s3:DeleteObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*"
+                    "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*",
+                    "arn:aws:s3:::craterdog-bali-queues-us-west-2/*"
                   ]
                 },
                 {
@@ -155,23 +149,12 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "s3:PutObject",
-                    "s3:GetObject",
-                    "s3:DeleteObject"
-                  ],
-                  "Resource": [
-                    "arn:aws:s3:::craterdog-bali-queues-us-west-2/*"
-                  ]
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
                     "logs:CreateLogGroup",
                     "logs:CreateLogStream",
                     "logs:PutLogEvents"
                   ],
                   "Resource": [
-                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/bali-nebula-repository:*" }
+                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/craterdog/bali-nebula-repository:*" }
                   ]
                 }
               ]
@@ -183,28 +166,28 @@
     "RepositoryLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/bali-nebula-repository",
+        "LogGroupName": "/craterdog/bali-nebula-repository",
         "RetentionInDays": 1
       }
     },
     "RepositoryLambda": {
       "Type": "AWS::Lambda::Function",
-      "DependsOn": [ "RepositoryLambdaRole" ],
+      "DependsOn": [ "RepositoryRole" ],
       "Properties": {
         "FunctionName": "bali-nebula-repository",
         "Description": "This lambda function implements the Bali Nebula Repository API.",
+        "Role": { "Fn::GetAtt": [ "RepositoryRole", "Arn" ] },
+        "Runtime": "nodejs8.10",
+        "MemorySize": 256,
+        "Timeout": 5,
         "Code": {
-          "S3Bucket": { "Ref": "EnvironmentBucket" },
+          "S3Bucket": "craterdog-bali-environment-us-east-1",
           "S3Key": "lambdas/BaliNebulaRepository.zip"
         },
-        "Handler": "BaliNebulaRepository.handler",
-        "MemorySize": 128,
-        "Role": { "Fn::GetAtt": [ "RepositoryLambdaRole", "Arn" ] },
-        "Runtime": "nodejs8.10",
-        "Timeout": 5
+        "Handler": "BaliNebulaRepository.handler"
       }
     },
-    "RepositoryLambdaPermission": {
+    "RepositoryPermission": {
       "Type": "AWS::Lambda::Permission",
       "DependsOn": [ "RepositoryLambda" ],
       "Properties": {
