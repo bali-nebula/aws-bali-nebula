@@ -52,7 +52,7 @@
         "Path": "/",
         "Policies": [
           {
-            "PolicyName": "LogReplicationPolicy",
+            "PolicyName": "LogBucketPolicy",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
@@ -125,104 +125,12 @@
         }
       }
     },
-    "LogBucketPolicy": {
-      "Type": "AWS::S3::BucketPolicy",
-      "DependsOn": [ "LogBucket" ],
-      "Properties": {
-        "Bucket": { "Ref": "LogBucket" },
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": { "Service": "cloudtrail.amazonaws.com" },
-              "Action": "s3:GetBucketAcl",
-              "Resource": { "Fn::Sub": "arn:aws:s3:::craterdog-bali-logs-${AWS::Region}" }
-            },
-            {
-              "Effect": "Allow",
-              "Principal": { "Service": "cloudtrail.amazonaws.com" },
-              "Action": "s3:PutObject",
-              "Resource": { "Fn::Sub": "arn:aws:s3:::craterdog-bali-logs-${AWS::Region}/*" },
-              "Condition": {
-                "StringEquals": {
-                  "s3:x-amz-acl": "bucket-owner-full-control"
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "CloudTrailRole": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "cloudtrail.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole"
-            }
-          ]
-        },
-        "Path": "/",
-        "Policies": [
-          {
-            "PolicyName": "LogReplicationPolicy",
-            "PolicyDocument": {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents"
-                  ],
-                  "Resource": [
-                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/craterdog/administration:*" }
-                  ]
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
-    "CloudTrailLogGroup": {
+    "NebulaLogGroup": {
       "Type": "AWS::Logs::LogGroup",
-      "DependsOn": ["LogBucketPolicy"],
+      "DependsOn": ["LogBucket"],
       "Properties": {
-        "LogGroupName": "/craterdog/administration",
+        "LogGroupName": "bali-nebula",
         "RetentionInDays": 1
-      }
-    },
-    "CloudTrail": {
-      "Type": "AWS::CloudTrail::Trail",
-      "DependsOn": [ "LogBucket", "CloudTrailLogGroup" ],
-      "Properties": {
-        "CloudWatchLogsRoleArn": { "Fn::GetAtt": [ "CloudTrailRole", "Arn" ] },
-        "CloudWatchLogsLogGroupArn": { "Fn::GetAtt": [ "CloudTrailLogGroup", "Arn" ] },
-        "S3BucketName": { "Ref": "LogBucket" },
-        "IncludeGlobalServiceEvents": true,
-        "IsMultiRegionTrail": true,
-        "IsLogging": "true"
-      }
-    },
-    "EnvironmentBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-environment-${AWS::Region}" },
-        "AccessControl": "Private",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        }
       }
     }
   }

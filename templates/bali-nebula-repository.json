@@ -1,6 +1,39 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula Repository.",
+  "Parameters": {
+    "FunctionName": {
+      "Description": "The name of the lambda function.",
+      "Type": "String",
+      "Default": "bali-nebula-repository"
+    },
+    "TestColor": {
+      "Description": "The color of the environment being used for testing.",
+      "Type": "String",
+      "Default": "green",
+      "AllowedValues" : ["blue", "green"],
+      "ConstraintDescription" : "You must specify either 'blue' or 'green'."
+    },
+    "EnvironmentBucket": {
+      "Description": "The name of the S3 bucket that contains the environment configuration files.",
+      "Type": "String",
+      "Default": "craterdog-bali-environment-us-east-1"
+    }
+  },
+  "Conditions": {
+    "BlueIsTesting" : {
+       "Fn::Equals": [
+          {"Ref": "TestColor"},
+          "blue"
+       ]
+    },
+    "GreenIsTesting" : {
+       "Fn::Equals": [
+          {"Ref": "TestColor"},
+          "green"
+       ]
+    }
+  },
   "Outputs": {
     "ApiId": {
       "Value": { "Ref": "RepositoryAPI" }
@@ -11,7 +44,8 @@
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
         "Name": "Nebula Repository API",
-        "Description": "This API allows a client application to interact with the Bali Nebula Repository."
+        "Description": "This API allows a client application to interact with the Bali Nebula Repository.",
+        "EndpointConfiguration": { "Types": [ "REGIONAL" ] }
       }
     },
     "ProxyResource": {
@@ -65,7 +99,13 @@
       "Properties": {
         "RestApiId": { "Ref": "RepositoryAPI" },
         "DomainName": "bali-nebula.net",
-        "BasePath": "repository",
+        "BasePath": {
+          "Fn::If" : [
+            "BlueIsTesting",
+            "test-repository",
+            "repository"
+          ]
+        },
         "Stage": "blue"
       }
     },
@@ -89,7 +129,13 @@
       "Properties": {
         "RestApiId": { "Ref": "RepositoryAPI" },
         "DomainName": "bali-nebula.net",
-        "BasePath": "test",
+        "BasePath": {
+          "Fn::If" : [
+            "GreenIsTesting",
+            "test-repository",
+            "repository"
+          ]
+        },
         "Stage": "green"
       }
     },
@@ -100,9 +146,9 @@
           "Version": "2012-10-17",
           "Statement": [
             {
-              "Action": ["sts:AssumeRole"],
               "Effect": "Allow",
-              "Principal": { "Service": ["lambda.amazonaws.com"] }
+              "Principal": { "Service": ["lambda.amazonaws.com"] },
+              "Action": ["sts:AssumeRole"]
             }
           ]
         },
@@ -154,7 +200,7 @@
                     "logs:PutLogEvents"
                   ],
                   "Resource": [
-                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/craterdog/bali-nebula-repository:*" }
+                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FunctionName}:*" }
                   ]
                 }
               ]
@@ -163,28 +209,21 @@
         ]
       }
     },
-    "RepositoryLogGroup": {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {
-        "LogGroupName": "/craterdog/bali-nebula-repository",
-        "RetentionInDays": 1
-      }
-    },
     "RepositoryLambda": {
       "Type": "AWS::Lambda::Function",
       "DependsOn": [ "RepositoryRole" ],
       "Properties": {
-        "FunctionName": "bali-nebula-repository",
+        "FunctionName": { "Ref": "FunctionName" },
         "Description": "This lambda function implements the Bali Nebula Repository API.",
         "Role": { "Fn::GetAtt": [ "RepositoryRole", "Arn" ] },
         "Runtime": "nodejs8.10",
         "MemorySize": 256,
         "Timeout": 5,
         "Code": {
-          "S3Bucket": "craterdog-bali-environment-us-east-1",
-          "S3Key": "lambdas/BaliNebulaRepository.zip"
+          "S3Bucket": { "Ref": "EnvironmentBucket" },
+          "S3Key": { "Fn::Sub": "lambdas/${FunctionName}.zip" }
         },
-        "Handler": "BaliNebulaRepository.handler"
+        "Handler": { "Fn::Sub": "${FunctionName}.handler" }
       }
     },
     "RepositoryPermission": {

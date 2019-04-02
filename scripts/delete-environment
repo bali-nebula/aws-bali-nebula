@@ -1,0 +1,18 @@
+#!/bin/bash
+SCRIPTS=`dirname $0`
+
+echo
+echo "Deleting the environment bucket..."
+${SCRIPTS}/delete-bucket craterdog-bali-environment-us-east-1
+
+echo
+echo "Deleting the log bucket..."
+${SCRIPTS}/delete-bucket craterdog-bali-logs-us-east-1
+
+echo
+echo "Deleting the cloudformation stack..."
+aws --region us-east-1 cloudformation delete-stack \
+    --stack-name craterdog-bali-environment-us-east-1
+
+echo
+echo "Done."
