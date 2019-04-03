@@ -1,0 +1,32 @@
+#!/bin/bash
+
+SCRIPTS=`dirname $0`
+
+if [ `cat ${SCRIPTS}/test-color.txt` = "blue" ]; then
+    TEST_COLOR='green'
+    PROD_COLOR='blue'
+else
+    TEST_COLOR='blue'
+    PROD_COLOR='green'
+fi
+
+echo
+echo "The new production stage will be '${PROD_COLOR}'."
+
+echo
+echo "Making the test repository service the new production repository service..."
+aws --region us-east-1 apigateway update-base-path-mapping \
+    --domain-name bali-nebula.net \
+    --base-path repository \
+    --patch-operations op='replace',path='/stage',value="$PROD_COLOR"
+
+echo
+echo "Making the production repository service the new test repository service..."
+aws --region us-east-1 apigateway update-base-path-mapping \
+    --domain-name bali-nebula.net \
+    --base-path test-repository \
+    --patch-operations op='replace',path='/stage',value="$TEST_COLOR"
+
+echo "${TEST_COLOR}" > ${SCRIPTS}/test-color.txt
+echo
+echo "Done."
