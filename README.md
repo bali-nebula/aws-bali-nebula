@@ -2,9 +2,9 @@
 
 ### Bali Nebula
 This project provides the AWS CloudFormation templates needed to manage the [_Bali Nebula™_](https://github.com/craterdog-bali/bali-project-documentation/wiki). The Bali Nebula™ consists of the following layered modules and runs in the AWS cloud:
- * Bali Nebula™
- * Bali Nebula API™
+ * Bali Nebula Services™
  * Bali Virtual Machine™
+ * Bali Nebula API™
  * Bali Digital Notary™
  * Bali Component Framework™
 
