@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Emptying the accounts bucket..."
+./scripts/empty-bucket craterdog-bali-accounts-us-west-2
+
 echo "Emptying the certificates bucket..."
 ./scripts/empty-bucket craterdog-bali-certificates-us-west-2
 
