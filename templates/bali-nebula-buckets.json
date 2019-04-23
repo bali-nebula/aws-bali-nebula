@@ -28,6 +28,19 @@
         }
       }
     },
+    "NamesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": { "Fn::Sub": "craterdog-bali-names-${AWS::Region}" },
+        "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        }
+      }
+    },
     "AccountsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
