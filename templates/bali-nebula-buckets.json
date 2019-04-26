@@ -28,36 +28,10 @@
         }
       }
     },
-    "NamesBucket": {
+    "CitationsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-names-${AWS::Region}" },
-        "AccessControl": "Private",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        }
-      }
-    },
-    "AccountsBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-accounts-${AWS::Region}" },
-        "AccessControl": "Private",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        }
-      }
-    },
-    "CertificatesBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-certificates-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-bali-citations-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
@@ -97,19 +71,6 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-documents-${AWS::Region}" },
-        "AccessControl": "Private",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        }
-      }
-    },
-    "TypesBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-types-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
