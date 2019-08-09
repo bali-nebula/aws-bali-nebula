@@ -235,6 +235,14 @@
         "FunctionName": { "Fn::GetAtt": [ "RepositoryLambda", "Arn" ] },
         "SourceArn": { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RepositoryAPI}/*" }
       }
+    },
+    "RepositoryLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "DependsOn": [ "RepositoryLambda" ],
+      "Properties": {
+        "LogGroupName": { "Fn::Sub": "/aws/lambda/${RepositoryLambda}" },
+        "RetentionInDays": 7
+      }
     }
   }
 }
