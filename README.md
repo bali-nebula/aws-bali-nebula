@@ -11,7 +11,7 @@ _This project is still in its early stages and the cloud architecture is likely 
 ### Bali Nebula Architecture
 The modules are used to create an Amazon AWS based cloud architecture:
 
-![Architecture](https://raw.githubusercontent.com/craterdog-bali/bali-project-documentation/master/images/The%20Bali%20Nebula%20Architecture.png)
+![Architecture](https://raw.githubusercontent.com/craterdog-bali/bali-project-documentation/master/images/TheBaliNebulaAPI.png)
 
 ### Installing HomeBrew
 We use [homebrew](https://brew.sh/) to install the other things we need, so here is how to install it:
