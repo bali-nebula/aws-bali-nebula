@@ -8,7 +8,7 @@ This project provides the AWS CloudFormation templates needed to manage the [_Ba
 _**WARNING**_
 _This project is still in its early stages and the cloud architecture is likely to change._
 
-### Bali Nebula Architecture
+### Bali Nebula™ Architecture
 The modules are used to create an Amazon AWS based cloud architecture:
 
 ![Architecture](https://raw.githubusercontent.com/craterdog-bali/bali-project-documentation/master/images/BaliNebulaArchitecture.png)
