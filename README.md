@@ -1,6 +1,6 @@
 ![Logo](https://raw.githubusercontent.com/craterdog-bali/bali-project-documentation/master/images/CraterDogLogo.png)
 
-### Bali Nebula Modules
+### Bali Nebula™ Modules
 This project provides the AWS CloudFormation templates needed to manage the [_Bali Nebula™_](https://github.com/craterdog-bali/bali-project-documentation/wiki). The Bali Nebula™ consists of the following layered modules:
 
 ![Pyramid](https://raw.githubusercontent.com/craterdog-bali/bali-project-documentation/master/images/BaliPyramid.png)
