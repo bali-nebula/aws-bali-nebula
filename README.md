@@ -1,9 +1,9 @@
-![Logo](https://raw.githubusercontent.com/craterdog-bali/bali-project-documentation/master/images/CraterDogLogo.png)
+![Logo](docs/images/CraterDogLogo.png)
 
 ### Bali Nebula™ Modules
 This project provides the AWS CloudFormation templates needed to manage the [_Bali Nebula™_](https://github.com/craterdog-bali/bali-project-documentation/wiki). The Bali Nebula™ consists of the following layered modules:
 
-![Pyramid](https://raw.githubusercontent.com/craterdog-bali/bali-project-documentation/master/images/BaliPyramid.png)
+![Pyramid](docs/images/BaliPyramid.png)
 
 _**WARNING**_
 _This project is still in its early stages and the cloud architecture is likely to change._
@@ -11,7 +11,7 @@ _This project is still in its early stages and the cloud architecture is likely 
 ### Bali Nebula™ Architecture
 The modules are used to create an Amazon AWS based cloud architecture:
 
-![Architecture](https://raw.githubusercontent.com/craterdog-bali/bali-project-documentation/master/images/BaliNebulaArchitecture.png)
+![Architecture](docs/BaliNebulaArchitecture.png)
 
 ### Installing HomeBrew
 We use [homebrew](https://brew.sh/) to install the other things we need, so here is how to install it:
