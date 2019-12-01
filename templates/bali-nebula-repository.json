@@ -166,9 +166,9 @@
                     "s3:GetObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-certificates-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-types-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*"
+                    "arn:aws:s3:::craterdog-bali-citations-us-west-2/*",
+                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*",
+                    "arn:aws:s3:::craterdog-bali-types-us-west-2/*"
                   ]
                 },
                 {
@@ -216,7 +216,7 @@
         "FunctionName": { "Ref": "FunctionName" },
         "Description": "This lambda function implements the Bali Nebula Repository API.",
         "Role": { "Fn::GetAtt": [ "RepositoryRole", "Arn" ] },
-        "Runtime": "nodejs8.10",
+        "Runtime": "nodejs12.x",
         "MemorySize": 256,
         "Timeout": 5,
         "Code": {
