@@ -27,6 +27,20 @@ aws --region us-east-1 apigateway update-base-path-mapping \
     --base-path test-repository \
     --patch-operations op='replace',path='/stage',value="$TEST_COLOR"
 
+echo
+echo "Making the test HTML service the new production HTML service..."
+aws --region us-east-1 apigateway update-base-path-mapping \
+    --domain-name bali-nebula.net \
+    --base-path html \
+    --patch-operations op='replace',path='/stage',value="$PROD_COLOR"
+
+echo
+echo "Making the production HTML service the new test HTML service..."
+aws --region us-east-1 apigateway update-base-path-mapping \
+    --domain-name bali-nebula.net \
+    --base-path test-html \
+    --patch-operations op='replace',path='/stage',value="$TEST_COLOR"
+
 echo "${TEST_COLOR}" > ${SCRIPTS}/test-color.txt
 echo
 echo "Done."

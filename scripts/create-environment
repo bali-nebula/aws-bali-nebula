@@ -21,7 +21,7 @@ aws --region us-east-1 s3api put-object \
     --body templates/bali-nebula-environment.json
 
 echo
-echo "Creating the cloudformation stack..."
+echo "Creating the cloud formation stack..."
 aws --region us-east-1 cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
     --stack-name craterdog-bali-environment-us-east-1 \

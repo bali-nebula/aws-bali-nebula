@@ -1,13 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This cloud formation template is used to setup the Bali Nebula environment.",
-  "Parameters": {
-    "BackupBucket": {
-      "Description": "The name of the bucket that is used for storing backups.",
-      "Type": "String",
-      "Default": "craterdog-bali-logs-us-west-2"
-    }
-  },
   "Resources": {
     "NebulaDomain": {
       "Type": "AWS::ApiGateway::DomainName",
@@ -24,7 +17,7 @@
       "DependsOn": [ "NebulaDomain" ],
       "Properties" : {
         "Name": "bali-nebula.net.",
-        "Comment" : "Route all repository requests to the repository API gateway endpoint,",
+        "Comment" : "Route all service requests to the service API gateway endpoint,",
         "Type" : "A",
         "HostedZoneName" : "bali-nebula.net.",
         "AliasTarget" : {

@@ -2,32 +2,6 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This cloud formation template is used to setup the S3 buckets for the Bali Nebula.",
   "Resources": {
-    "LogBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-logs-${AWS::Region}" },
-        "AccessControl": "Private",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        },
-        "VersioningConfiguration": {
-          "Status": "Enabled"
-        },
-        "LifecycleConfiguration": {
-          "Rules": [
-            {
-              "Id": "BackupExpiration",
-              "ExpirationInDays": 10,
-              "NoncurrentVersionExpirationInDays": 1,
-              "Status": "Enabled"
-            }
-          ]
-        }
-      }
-    },
     "CitationsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
@@ -97,6 +71,19 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-queues-${AWS::Region}" },
+        "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        }
+      }
+    },
+    "WebBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": { "Fn::Sub": "craterdog-bali-web-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,

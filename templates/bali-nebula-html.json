@@ -1,11 +1,11 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula Repository Service.",
+  "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula HTML Service.",
   "Parameters": {
     "FunctionName": {
       "Description": "The name of the lambda function.",
       "Type": "String",
-      "Default": "bali-nebula-repository"
+      "Default": "bali-nebula-html"
     },
     "TestColor": {
       "Description": "The color of the environment being used for testing.",
@@ -43,8 +43,8 @@
     "ServiceAPI": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "Bali Nebula Repository Service",
-        "Description": "This API allows a client application to interact with the Bali Nebula Repository Service.",
+        "Name": "Bali Nebula HTML Service",
+        "Description": "This API allows a client application to interact with the Bali Nebula HTML Service.",
         "EndpointConfiguration": { "Types": [ "REGIONAL" ] }
       }
     },
@@ -86,7 +86,7 @@
         "DeploymentId": { "Ref": "ServiceDeployment" },
         "RestApiId": { "Ref": "ServiceAPI" },
         "StageName": "blue",
-        "Description" : "This stage deploys the Bali Nebula Repository Service in the blue environment.",
+        "Description" : "This stage deploys the Bali Nebula HTML Service in the blue environment.",
         "Variables" : { "EnvironmentColor": "blue" },
         "TracingEnabled" : false,
         "CacheClusterEnabled" : false,
@@ -102,8 +102,8 @@
         "BasePath": {
           "Fn::If" : [
             "BlueIsTesting",
-            "test-repository",
-            "repository"
+            "test-web",
+            "web"
           ]
         },
         "Stage": "blue"
@@ -116,7 +116,7 @@
         "DeploymentId": { "Ref": "ServiceDeployment" },
         "RestApiId": { "Ref": "ServiceAPI" },
         "StageName": "green",
-        "Description" : "This stage deploys the Bali Nebula Repository Service in the green environment.",
+        "Description" : "This stage deploys the Bali Nebula HTML Service in the green environment.",
         "Variables" : { "EnvironmentColor": "green" },
         "TracingEnabled" : false,
         "CacheClusterEnabled" : false,
@@ -132,8 +132,8 @@
         "BasePath": {
           "Fn::If" : [
             "GreenIsTesting",
-            "test-repository",
-            "repository"
+            "test-web",
+            "web"
           ]
         },
         "Stage": "green"
@@ -162,34 +162,14 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "s3:PutObject",
                     "s3:GetObject"
                   ],
                   "Resource": [
                     "arn:aws:s3:::craterdog-bali-citations-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-types-us-west-2/*"
-                  ]
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "s3:PutObject",
-                    "s3:GetObject",
-                    "s3:DeleteObject"
-                  ],
-                  "Resource": [
                     "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-queues-us-west-2/*"
-                  ]
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "s3:ListBucket"
-                  ],
-                  "Resource": [
-                    "arn:aws:s3:::craterdog-bali-queues-us-west-2"
+                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*",
+                    "arn:aws:s3:::craterdog-bali-types-us-west-2/*",
+                    "arn:aws:s3:::craterdog-bali-web-us-west-2/*"
                   ]
                 },
                 {
@@ -214,7 +194,7 @@
       "DependsOn": [ "ServiceRole" ],
       "Properties": {
         "FunctionName": { "Ref": "FunctionName" },
-        "Description": "This lambda function implements the Bali Nebula Repository Service.",
+        "Description": "This lambda function implements the Bali Nebula HTML Service.",
         "Role": { "Fn::GetAtt": [ "ServiceRole", "Arn" ] },
         "Runtime": "nodejs12.x",
         "MemorySize": 256,

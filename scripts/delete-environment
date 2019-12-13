@@ -6,7 +6,7 @@ echo "Deleting the environment bucket..."
 ${SCRIPTS}/delete-bucket craterdog-bali-environment-us-east-1
 
 echo
-echo "Deleting the cloudformation stack..."
+echo "Deleting the cloud formation stack..."
 aws --region us-east-1 cloudformation delete-stack \
     --stack-name craterdog-bali-environment-us-east-1
 
