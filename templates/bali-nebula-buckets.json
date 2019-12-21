@@ -33,7 +33,7 @@
           "Rules": [
             {
               "Id": "DraftExpiration",
-              "ExpirationInDays": 10,
+              "ExpirationInDays": 7,
               "NoncurrentVersionExpirationInDays": 1,
               "Status": "Enabled"
             }
@@ -80,10 +80,10 @@
         }
       }
     },
-    "WebBucket": {
+    "StaticBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-web-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-bali-statics-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,

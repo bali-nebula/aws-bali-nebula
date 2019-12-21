@@ -45,6 +45,9 @@
       "Properties": {
         "Name": "Bali Nebula Repository Service",
         "Description": "This API allows a client application to interact with the Bali Nebula Repository Service.",
+        "BinaryMediaTypes": [
+            "*/*"
+        ],
         "EndpointConfiguration": { "Types": [ "REGIONAL" ] }
       }
     },
@@ -162,6 +165,15 @@
                 {
                   "Effect": "Allow",
                   "Action": [
+                    "s3:GetObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-bali-statics-us-west-2/*"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
                     "s3:PutObject",
                     "s3:GetObject"
                   ],
@@ -179,14 +191,15 @@
                     "s3:DeleteObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-queues-us-west-2/*"
+                    "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*"
                   ]
                 },
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "s3:ListBucket"
+                    "s3:ListBucket",
+                    "s3:PutObject",
+                    "s3:DeleteObject"
                   ],
                   "Resource": [
                     "arn:aws:s3:::craterdog-bali-queues-us-west-2"
@@ -218,7 +231,7 @@
         "Role": { "Fn::GetAtt": [ "ServiceRole", "Arn" ] },
         "Runtime": "nodejs12.x",
         "MemorySize": 256,
-        "Timeout": 5,
+        "Timeout": 10,
         "Code": {
           "S3Bucket": { "Ref": "EnvironmentBucket" },
           "S3Key": { "Fn::Sub": "lambdas/${FunctionName}.zip" }

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Emptying the statics bucket..."
+./scripts/empty-bucket craterdog-bali-statics-us-west-2
+
 echo "Emptying the citations bucket..."
 ./scripts/empty-bucket craterdog-bali-citations-us-west-2
 
