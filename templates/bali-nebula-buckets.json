@@ -2,6 +2,19 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This cloud formation template is used to setup the S3 buckets for the Bali Nebula.",
   "Resources": {
+    "StaticBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": { "Fn::Sub": "craterdog-bali-statics-${AWS::Region}" },
+        "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        }
+      }
+    },
     "CitationsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
@@ -71,19 +84,6 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-queues-${AWS::Region}" },
-        "AccessControl": "Private",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        }
-      }
-    },
-    "StaticBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-statics-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
