@@ -210,7 +210,7 @@
                                 {
                                     "Effect": "Allow",
                                     "Action": [
-                                        "s3:*"
+                                        "s3:GetObject"
                                     ],
                                     "Resource": [
                                         "arn:aws:s3:::craterdog-bali-statics-us-west-2/*"
