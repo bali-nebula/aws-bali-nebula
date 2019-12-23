@@ -45,9 +45,6 @@
       "Properties": {
         "Name": "Bali Nebula Repository Service",
         "Description": "This API allows a client application to interact with the Bali Nebula Repository Service.",
-        "BinaryMediaTypes": [
-            "*/*"
-        ],
         "EndpointConfiguration": { "Types": [ "REGIONAL" ] }
       }
     },
