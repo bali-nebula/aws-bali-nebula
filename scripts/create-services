@@ -23,7 +23,7 @@ aws --region us-west-2 s3api put-object \
 aws --region us-west-2 s3api put-object \
     --bucket craterdog-bali-statics-us-west-2 \
     --key images/favicon.ico \
-    --content-type "image/png" \
+    --content-type "image/x-icon" \
     --body docs/images/favicon.ico
 
 echo
