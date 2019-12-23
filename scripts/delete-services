@@ -3,6 +3,9 @@
 echo
 echo "Deleting the cloud formation stacks..."
 aws --region us-east-1 cloudformation delete-stack \
+    --stack-name craterdog-bali-static-us-east-1
+
+aws --region us-east-1 cloudformation delete-stack \
     --stack-name craterdog-bali-repository-us-east-1
 
 echo
