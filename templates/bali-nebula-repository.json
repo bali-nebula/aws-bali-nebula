@@ -165,15 +165,6 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "s3:GetObject"
-                  ],
-                  "Resource": [
-                    "arn:aws:s3:::craterdog-bali-statics-us-west-2/*"
-                  ]
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
                     "s3:PutObject",
                     "s3:GetObject"
                   ],
