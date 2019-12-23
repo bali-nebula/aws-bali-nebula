@@ -36,7 +36,7 @@
                 "Name": "Bali Nebula Static Content",
                 "Description": "This API allows a client application to retrieve Bali Nebula static content.",
                 "BinaryMediaTypes": [
-                    "image~1*"
+                    "image/png"
                 ],
                 "EndpointConfiguration": { "Types": [ "REGIONAL" ] }
             }
@@ -70,11 +70,16 @@
                 "HttpMethod": "GET",
                 "RequestParameters": {
                     "method.request.path.type": true,
-                    "method.request.path.content": true
+                    "method.request.path.content": true,
+                    "method.request.header.Accept": true
                 },
                 "MethodResponses": [
                     {
-                        "StatusCode": 200
+                        "StatusCode": 200,
+                        "ResponseParameters": {
+                            "method.response.header.Content-Type": true,
+                            "method.response.header.Content-Length": true
+                        }
                     },
                     {
                         "StatusCode": 400
@@ -90,12 +95,25 @@
                     "RequestParameters": {
                         "integration.request.path.type": "method.request.path.type",
                         "integration.request.path.content": "method.request.path.content",
+                        "integration.request.header.Accept": "method.request.header.Accept",
                         "integration.request.header.x-amz-acl": "'authenticated-read'"
                     },
                     "PassthroughBehavior": "WHEN_NO_MATCH",
                     "IntegrationResponses": [
                         {
-                            "StatusCode": 200
+                            "StatusCode": 200,
+                            "ResponseParameters": {
+                                "method.response.header.Content-Type": "integration.response.header.Content-Type",
+                                "method.response.header.Content-Length": "integration.response.header.Content-Length"
+                            }
+                        },
+                        {
+                            "StatusCode": 400,
+                            "SelectionPattern": "4\\d{2}"
+                        },
+                        {
+                            "StatusCode": 500,
+                            "SelectionPattern": "5\\d{2}"
                         }
                     ],
                     "Uri": "arn:aws:apigateway:us-west-2:s3:path/craterdog-bali-statics-us-west-2/{type}/{content}"
