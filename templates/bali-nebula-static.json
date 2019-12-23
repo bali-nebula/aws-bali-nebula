@@ -71,7 +71,7 @@
                 "RequestParameters": {
                     "method.request.path.type": true,
                     "method.request.path.content": true,
-                    "method.request.header.Accept": true
+                    "method.request.header.Accept": false
                 },
                 "MethodResponses": [
                     {

@@ -148,9 +148,7 @@ pre {
 }
 
 .type {
-    color: #3399ff; /* blue */
-    /*font-weight: bold;*/
-    text-decoration: underline;
+    color: Black;
     padding: 1px;
 }
 
@@ -268,7 +266,7 @@ pre {
 .parameters {
     border: 1px solid;
     border-top: 0px;  /* flush with lower border of component above */
-    background-color: #ffe6e6; /* light red */
+    background-color: #f0f0f0; /* light gray */
 }
 
 .procedure {
