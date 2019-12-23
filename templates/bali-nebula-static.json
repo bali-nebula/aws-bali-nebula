@@ -36,7 +36,7 @@
                 "Name": "Bali Nebula Static Content",
                 "Description": "This API allows a client application to retrieve Bali Nebula static content.",
                 "BinaryMediaTypes": [
-                    "image/png"
+                    "*/*"
                 ],
                 "EndpointConfiguration": { "Types": [ "REGIONAL" ] }
             }
