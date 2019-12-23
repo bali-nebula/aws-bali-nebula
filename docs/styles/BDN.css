@@ -148,7 +148,7 @@ pre {
 }
 
 .type {
-    color: Black;
+    color: #404040; /* dark gray */
     padding: 1px;
 }
 
