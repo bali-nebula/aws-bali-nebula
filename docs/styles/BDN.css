@@ -213,26 +213,77 @@ pre {
 
 .element {
     border: 1px solid;
-    background-color: #fff7e6; /* light yellow */
+    border-color: Gray;
+    background-color: White;
 }
 
 /* override specific element types AFTER element has been defined */
 
+.angle {
+    color: DarkViolet;
+}
+
+.binary {
+    color: DarkGoldenRod;
+}
+
+.duration {
+    color: DarkViolet;
+}
+
+.moment {
+    color: DarkViolet;
+}
+
+.name {
+    color: CornflowerBlue;
+}
+
+.name a {
+    color: CornflowerBlue;
+}
+
+.number {
+    color: Teal;
+}
+
+.pattern {
+    color: DarkOrange;
+}
+
+.percent {
+    color: Teal;
+}
+
+.probability {
+    color: Teal;
+}
+
 .reference {
     display: block;
-    color: #3399ff; /* blue */
-    border-color: Gray;
+    color: CornflowerBlue;
 }
 
 .reserved {
-    color: Red;
-    border-color: Gray;
+    color: DarkRed;
+}
+
+.tag {
+    color: DarkGoldenRod;
+}
+
+.text {
+    color: MediumBlue;
+}
+
+.version {
+    color: DarkViolet;
 }
 
 .range {
     border: 1px solid;
-    background-color: #fff7e6; /* light yellow */
     padding: 0px;
+    background-color: White;  /* range is not an element */
 }
 
 /* handle most element types as items */
