@@ -135,6 +135,7 @@
 pre {
     font-family: 'Roboto Mono', monospace;
     margin: 0; /* a pre element defaults to a non-zero margin */
+    padding: 3px;
 }
 
 .document {
@@ -168,7 +169,7 @@ pre {
 .key {
     float: left;
     vertical-align: top;
-    padding: 0px;
+    padding-top: 2px;
 }
 
 /* handle most element types as keys */
@@ -200,6 +201,7 @@ pre {
 
 .colon {
     float: left;
+    padding-top: 6px;
     padding-left: 0px;
     font-style: italic;
 }
