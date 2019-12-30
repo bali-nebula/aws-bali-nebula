@@ -67,19 +67,6 @@
         }
       }
     },
-    "TypesBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-types-${AWS::Region}" },
-        "AccessControl": "Private",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        }
-      }
-    },
     "QueuesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {

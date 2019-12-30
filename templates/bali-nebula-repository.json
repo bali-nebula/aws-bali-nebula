@@ -167,8 +167,7 @@
                   ],
                   "Resource": [
                     "arn:aws:s3:::craterdog-bali-citations-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-types-us-west-2/*"
+                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*"
                   ]
                 },
                 {
