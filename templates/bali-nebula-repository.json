@@ -2,7 +2,7 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula Repository Service.",
   "Parameters": {
-    "FunctionName": {
+    "ServiceName": {
       "Description": "The name of the lambda function.",
       "Type": "String",
       "Default": "bali-nebula-repository"
@@ -36,11 +36,11 @@
   },
   "Outputs": {
     "ApiId": {
-      "Value": { "Ref": "ServiceAPI" }
+      "Value": { "Ref": "ServiceApi" }
     }
   },
   "Resources": {
-    "ServiceAPI": {
+    "ServiceApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
         "Name": "Bali Nebula Repository Service",
@@ -50,10 +50,10 @@
     },
     "ProxyResource": {
       "Type": "AWS::ApiGateway::Resource",
-      "DependsOn": [ "ServiceAPI" ],
+      "DependsOn": [ "ServiceApi" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceAPI" },
-        "ParentId": { "Fn::GetAtt": [ "ServiceAPI", "RootResourceId" ] },
+        "RestApiId": { "Ref": "ServiceApi" },
+        "ParentId": { "Fn::GetAtt": [ "ServiceApi", "RootResourceId" ] },
         "PathPart": "{proxy+}"
       }
     },
@@ -61,7 +61,7 @@
       "Type": "AWS::ApiGateway::Method",
       "DependsOn": [ "ProxyResource" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceAPI" },
+        "RestApiId": { "Ref": "ServiceApi" },
         "ResourceId": { "Ref": "ProxyResource" },
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
@@ -76,7 +76,7 @@
       "Type": "AWS::ApiGateway::Deployment",
       "DependsOn": [ "ProxyMethod" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceAPI" }
+        "RestApiId": { "Ref": "ServiceApi" }
       }
     },
     "BlueStage": {
@@ -84,7 +84,7 @@
       "DependsOn": [ "ServiceDeployment" ],
       "Properties": {
         "DeploymentId": { "Ref": "ServiceDeployment" },
-        "RestApiId": { "Ref": "ServiceAPI" },
+        "RestApiId": { "Ref": "ServiceApi" },
         "StageName": "blue",
         "Description" : "This stage deploys the Bali Nebula Repository Service in the blue environment.",
         "Variables" : { "EnvironmentColor": "blue" },
@@ -97,7 +97,7 @@
       "Type": "AWS::ApiGateway::BasePathMapping",
       "DependsOn": [ "BlueStage" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceAPI" },
+        "RestApiId": { "Ref": "ServiceApi" },
         "DomainName": "bali-nebula.net",
         "BasePath": {
           "Fn::If" : [
@@ -114,7 +114,7 @@
       "DependsOn": [ "ServiceDeployment" ],
       "Properties": {
         "DeploymentId": { "Ref": "ServiceDeployment" },
-        "RestApiId": { "Ref": "ServiceAPI" },
+        "RestApiId": { "Ref": "ServiceApi" },
         "StageName": "green",
         "Description" : "This stage deploys the Bali Nebula Repository Service in the green environment.",
         "Variables" : { "EnvironmentColor": "green" },
@@ -127,7 +127,7 @@
       "Type": "AWS::ApiGateway::BasePathMapping",
       "DependsOn": [ "GreenStage" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceAPI" },
+        "RestApiId": { "Ref": "ServiceApi" },
         "DomainName": "bali-nebula.net",
         "BasePath": {
           "Fn::If" : [
@@ -199,7 +199,7 @@
                     "logs:PutLogEvents"
                   ],
                   "Resource": [
-                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FunctionName}:*" }
+                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${ServiceName}:*" }
                   ]
                 }
               ]
@@ -212,7 +212,7 @@
       "Type": "AWS::Lambda::Function",
       "DependsOn": [ "ServiceRole" ],
       "Properties": {
-        "FunctionName": { "Ref": "FunctionName" },
+        "FunctionName": { "Ref": "ServiceName" },
         "Description": "This lambda function implements the Bali Nebula Repository Service.",
         "Role": { "Fn::GetAtt": [ "ServiceRole", "Arn" ] },
         "Runtime": "nodejs12.x",
@@ -220,9 +220,9 @@
         "Timeout": 10,
         "Code": {
           "S3Bucket": { "Ref": "EnvironmentBucket" },
-          "S3Key": { "Fn::Sub": "lambdas/${FunctionName}.zip" }
+          "S3Key": { "Fn::Sub": "lambdas/${ServiceName}.zip" }
         },
-        "Handler": { "Fn::Sub": "${FunctionName}.handler" }
+        "Handler": { "Fn::Sub": "${ServiceName}.handler" }
       }
     },
     "ServicePermission": {
@@ -232,7 +232,7 @@
         "Principal": "apigateway.amazonaws.com",
         "Action": "lambda:InvokeFunction",
         "FunctionName": { "Fn::GetAtt": [ "ServiceLambda", "Arn" ] },
-        "SourceArn": { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ServiceAPI}/*" }
+        "SourceArn": { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ServiceApi}/*" }
       }
     },
     "ServiceLogGroup": {
@@ -241,6 +241,32 @@
       "Properties": {
         "LogGroupName": { "Fn::Sub": "/aws/lambda/${ServiceLambda}" },
         "RetentionInDays": 7
+      }
+    },
+    "ApiRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": { "Service": ["apigateway.amazonaws.com"] },
+              "Action": ["sts:AssumeRole"]
+            }
+          ]
+        },
+        "Path": "/",
+        "ManagedPolicyArns": [
+            { "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs" }
+        ]
+      }
+    },
+    "ApiAccount": {
+      "Type": "AWS::ApiGateway::Account",
+      "DependsOn": [ "ApiRole" ],
+      "Properties": {
+        "CloudWatchRoleArn": { "Fn::GetAtt": [ "ApiRole", "Arn" ] }
       }
     }
   }
