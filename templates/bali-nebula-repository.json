@@ -166,7 +166,7 @@
                     "s3:GetObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-citations-us-west-2/*",
+                    "arn:aws:s3:::craterdog-bali-names-us-west-2/*",
                     "arn:aws:s3:::craterdog-bali-documents-us-west-2/*"
                   ]
                 },
@@ -179,7 +179,7 @@
                   ],
                   "Resource": [
                     "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-queues-us-west-2/*"
+                    "arn:aws:s3:::craterdog-bali-bags-us-west-2/*"
                   ]
                 },
                 {
@@ -188,7 +188,7 @@
                     "s3:ListBucket"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-queues-us-west-2"
+                    "arn:aws:s3:::craterdog-bali-bags-us-west-2"
                   ]
                 },
                 {

@@ -15,10 +15,10 @@
         }
       }
     },
-    "CitationsBucket": {
+    "NamesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-citations-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-bali-names-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
@@ -67,10 +67,10 @@
         }
       }
     },
-    "QueuesBucket": {
+    "BagsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-queues-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-bali-bags-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,

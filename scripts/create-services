@@ -1,6 +1,10 @@
 #!/bin/bash
 
 echo
+echo "Emptying the static bucket..."
+./scripts/empty-bucket craterdog-bali-statics-us-west-2
+
+echo
 echo "Pushing out the latest version of the style sheets and images to S3..."
 aws --region us-west-2 s3api put-object \
     --bucket craterdog-bali-statics-us-west-2 \
