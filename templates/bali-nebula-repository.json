@@ -179,7 +179,7 @@
                   ],
                   "Resource": [
                     "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-bags-us-west-2/*"
+                    "arn:aws:s3:::craterdog-bali-messages-us-west-2/*"
                   ]
                 },
                 {
@@ -188,7 +188,7 @@
                     "s3:ListBucket"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-bags-us-west-2"
+                    "arn:aws:s3:::craterdog-bali-messages-us-west-2"
                   ]
                 },
                 {

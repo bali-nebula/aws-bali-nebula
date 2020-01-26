@@ -9,6 +9,6 @@ echo "Emptying the drafts bucket..."
 echo "Emptying the documents bucket..."
 ./scripts/empty-bucket craterdog-bali-documents-us-west-2
 
-echo "Emptying the bags bucket..."
-./scripts/empty-bucket craterdog-bali-bags-us-west-2
+echo "Emptying the messages bucket..."
+./scripts/empty-bucket craterdog-bali-messages-us-west-2
 

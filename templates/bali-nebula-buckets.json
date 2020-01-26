@@ -67,10 +67,10 @@
         }
       }
     },
-    "BagsBucket": {
+    "MessagesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-bags-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-bali-messages-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
