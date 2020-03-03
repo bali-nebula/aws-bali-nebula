@@ -2,8 +2,15 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This cloud formation template is used to setup the Bali Nebula environment.",
   "Resources": {
+    "NebulaHostedZone": {
+      "Type": "AWS::Route53::HostedZone",
+      "Properties": {
+         "Name": "bali-nebula.net"
+      }
+    },
     "NebulaDomain": {
       "Type": "AWS::ApiGateway::DomainName",
+      "DependsOn": [ "NebulaHostedZone" ],
       "Properties": {
         "RegionalCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/066d667f-ec36-486f-9fca-42136deb31bd",
         "DomainName": "bali-nebula.net",
