@@ -1,7 +1,13 @@
 #!/bin/bash
 
 echo
-echo "Pushing the latest version of the template out to S3..."
+echo "Pushing the latest version of the templates out to S3..."
+aws --region us-east-1 s3api put-object \
+    --bucket craterdog-bali-environment-us-east-1 \
+    --key templates/craterdog-environment.json \
+    --content-type "application/json" \
+    --body templates/craterdog-environment.json
+
 aws --region us-east-1 s3api put-object \
     --bucket craterdog-bali-environment-us-east-1 \
     --key templates/bali-nebula-environment.json \
@@ -9,7 +15,12 @@ aws --region us-east-1 s3api put-object \
     --body templates/bali-nebula-environment.json
 
 echo
-echo "Updating the cloud formation stack..."
+echo "Updating the cloud formation stacks..."
+aws --region us-east-1 cloudformation update-stack \
+    --capabilities CAPABILITY_IAM \
+    --stack-name craterdog-bali-website-us-east-1 \
+    --template-url https://s3.amazonaws.com/craterdog-bali-environment-us-east-1/templates/craterdog-environment.json 
+
 aws --region us-east-1 cloudformation update-stack \
     --capabilities CAPABILITY_IAM \
     --stack-name craterdog-bali-environment-us-east-1 \
