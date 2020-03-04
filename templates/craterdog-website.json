@@ -4,7 +4,6 @@
   "Resources": {
     "WebsiteBucket": {
       "Type": "AWS::S3::Bucket",
-      "DeletionPolicy": "Retain",
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-website-${AWS::Region}" },
         "AccessControl": "PublicRead",
@@ -49,12 +48,6 @@
         }
       }
     },
-    "CraterDogHostedZone": {
-      "Type": "AWS::Route53::HostedZone",
-      "Properties": {
-         "Name": "craterdog.net"
-      }
-    },
     "CloudFrontIdentity": {
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
       "Properties": {
@@ -65,9 +58,9 @@
     },
     "CraterDogDomain": {
       "Type": "AWS::CloudFront::Distribution",
-      "DependsOn": [ "CraterDogHostedZone" ],
+      "DependsOn": [ "WebsiteBucket" ],
       "Properties": {
-        "DistributionConfiguration": {
+        "DistributionConfig": {
           "Aliases": ["craterdog.net"],
           "PriceClass": "PriceClass_All",
           "Enabled": true,
@@ -80,7 +73,7 @@
           "Origins": [
             {
               "Id": "S3Origin",
-              "DomainName": { "Fn::Join": [ ".", [ { "Ref": "WebsiteBucket" }, "s3.amazonaws.com" ] ] },
+              "DomainName": "craterdog-bali-website-us-east-1.s3-website-us-east-1.amazonaws.com",
               "S3OriginConfig": {
                 "OriginAccessIdentity": { "Ref": "CloudFrontIdentity" }
               }
