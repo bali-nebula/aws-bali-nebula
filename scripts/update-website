@@ -10,7 +10,7 @@ aws --region us-east-1 s3api put-object \
 
 echo
 echo "Updating the cloud formation stack..."
-aws --region us-east-1 cloudformation create-stack \
+aws --region us-east-1 cloudformation update-stack \
     --capabilities CAPABILITY_IAM \
     --stack-name craterdog-bali-website-us-east-1 \
     --template-url https://s3.amazonaws.com/craterdog-bali-environment-us-east-1/templates/craterdog-website.json 

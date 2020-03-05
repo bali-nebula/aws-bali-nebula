@@ -2,14 +2,25 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This cloud formation template is used to setup the Crater Dog Technologies™ website.",
   "Resources": {
+    "CloudFrontIdentity": {
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
+          "Comment": "Unique identity that is allowed to access the S3 origin content."
+        }
+      }
+    },
     "WebsiteBucket": {
       "Type": "AWS::S3::Bucket",
+      "DependsOn": [ "CloudFrontIdentity" ],
       "Properties": {
         "BucketName": { "Fn::Sub": "craterdog-bali-website-${AWS::Region}" },
-        "AccessControl": "PublicRead",
-        "WebsiteConfiguration": {
-          "IndexDocument":"index.html",
-          "ErrorDocument":"error.html"
+        "AccessControl": "Private",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
         },
         "CorsConfiguration": {
           "CorsRules": [
@@ -19,7 +30,7 @@
                 "GET"
               ],
               "AllowedOrigins": [
-                "*"
+                { "Ref": "CloudFrontIdentity" }
               ],
               "MaxAge": 3000
             }
