@@ -55,3 +55,18 @@ for file in `find content -type f | grep "\.png"`; do
 done
 echo
 
+echo "Pushing out the latest ICO images to S3..."
+for file in `find content -type f | grep "\.ico"`; do
+    echo "  ${file:8}";
+    aws --region us-east-1 s3api put-object \
+        --bucket craterdog-bali-website-us-east-1 \
+        --content-type image/x-icon \
+        --key ${file:8} \
+        --body ${file}
+done
+echo
+
+echo "Invalidating the CloudFront caches..."
+aws cloudfront create-invalidation \
+    --distribution-id EUVZT0SMNOJGQ \
+    --paths "/*"

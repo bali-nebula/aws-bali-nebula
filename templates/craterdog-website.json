@@ -10,6 +10,27 @@
         }
       }
     },
+    "LogBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": { "Fn::Sub": "craterdog-bali-logs-${AWS::Region}" },
+        "AccessControl": "LogDeliveryWrite",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 7,
+              "Status": "Enabled"
+            }
+          ]
+        }
+      }
+    },
     "WebsiteBucket": {
       "Type": "AWS::S3::Bucket",
       "DependsOn": [ "CloudFrontIdentity" ],
@@ -38,7 +59,7 @@
         }
       }
     },
-    "BucketPolicy": {
+    "AccessPolicy": {
       "Type": "AWS::S3::BucketPolicy",
       "DependsOn": [ "WebsiteBucket" ],
       "Properties": {
@@ -65,17 +86,18 @@
     },
     "CraterDogDomain": {
       "Type": "AWS::CloudFront::Distribution",
-      "DependsOn": [ "WebsiteBucket" ],
+      "DependsOn": [ "LogBucket", "WebsiteBucket" ],
       "Properties": {
         "DistributionConfig": {
           "Aliases": ["craterdog.net"],
           "PriceClass": "PriceClass_All",
           "Enabled": true,
           "HttpVersion": "http2",
-          "DefaultRootObject": "index.html",
+          "DefaultRootObject": "Home.html",
           "ViewerCertificate": {
             "AcmCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/4896433b-fa2f-414d-8eed-7396c0ab193c",
-            "SslSupportMethod": "sni-only"
+            "SslSupportMethod": "sni-only",
+            "MinimumProtocolVersion": "TLSv1.2_2018"
           },
           "Origins": [
             {
@@ -100,6 +122,11 @@
               },
               "QueryString" : false
             }
+          },
+          "Logging": {
+            "Bucket": { "Fn::Sub": "craterdog-bali-logs-${AWS::Region}.s3.amazonaws.com" },
+            "IncludeCookies" : false,
+            "Prefix" : "craterdog.net/"
           }
         }
       }

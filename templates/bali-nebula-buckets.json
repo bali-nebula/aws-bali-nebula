@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "This cloud formation template is used to setup the S3 buckets for the Bali Nebula.",
+  "Description": "This cloud formation template is used to setup the S3 buckets for the Bali Nebula™.",
   "Resources": {
     "StaticBucket": {
       "Type": "AWS::S3::Bucket",
