@@ -138,6 +138,11 @@ pre {
     padding: 3px;
 }
 
+.title {
+    height: 200px;
+    padding: 0px;
+}
+
 .document {
 }
 
