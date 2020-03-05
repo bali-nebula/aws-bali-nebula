@@ -49,7 +49,11 @@
           "Statement": [
             {
               "Effect": "Allow",
-              "Principal": "*",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [ "", [ "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ", { "Ref": "CloudFrontIdentity" } ] ]
+                }
+              },
               "Action": "s3:GetObject",
               "Resource": {
                 "Fn::Join": [ "", [ "arn:aws:s3:::", { "Ref": "WebsiteBucket" }, "/*" ] ]
@@ -76,11 +80,11 @@
           "Origins": [
             {
               "Id": "S3Origin",
-              "DomainName": "craterdog-bali-website-us-east-1.s3-website-us-east-1.amazonaws.com",
-              "CustomOriginConfig": {
-                "HTTPPort": "80",
-                "HTTPSPort": "443",
-                "OriginProtocolPolicy": "http-only"
+              "DomainName": "craterdog-bali-website-us-east-1.s3.amazonaws.com",
+              "S3OriginConfig": {
+                "OriginAccessIdentity": {
+                  "Fn::Join": [ "/", [ "origin-access-identity", "cloudfront", { "Ref": "CloudFrontIdentity" } ] ]
+                }
               }
             }
           ],
