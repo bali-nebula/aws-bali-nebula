@@ -16,15 +16,15 @@ echo
 echo "Pushing the latest version of the template out to S3..."
 aws --region us-east-1 s3api put-object \
     --bucket craterdog-aws-us-east-1 \
-    --key templates/buckets.json \
+    --key templates/s3-buckets.json \
     --content-type "application/json" \
-    --body ./templates/buckets.json
+    --body ./templates/s3-buckets.json
 echo
 
 echo "Creating the cloudformation stack..."
 aws --region us-east-1 cloudformation create-stack \
     --stack-name craterdog-buckets-us-east-1 \
-    --template-url https://s3.amazonaws.com/craterdog-aws-us-east-1/templates/buckets.json 
+    --template-url https://s3.amazonaws.com/craterdog-aws-us-east-1/templates/s3-buckets.json 
 echo
 
 echo "Done."

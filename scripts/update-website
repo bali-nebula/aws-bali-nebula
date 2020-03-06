@@ -5,16 +5,16 @@ echo
 echo "Pushing the latest version of the template out to S3..."
 aws --region us-east-1 s3api put-object \
     --bucket craterdog-aws-us-east-1 \
-    --key templates/websites.json \
+    --key templates/craterdog-websites.json \
     --content-type "application/json" \
-    --body templates/websites.json
+    --body templates/craterdog-websites.json
 
 echo
 echo "Updating the cloud formation stack..."
 aws --region us-east-1 cloudformation update-stack \
     --capabilities CAPABILITY_IAM \
     --stack-name craterdog-websites-us-east-1 \
-    --template-url https://s3.amazonaws.com/craterdog-aws-us-east-1/templates/websites.json 
+    --template-url https://s3.amazonaws.com/craterdog-aws-us-east-1/templates/craterdog-websites.json 
 
 echo
 echo "Done."

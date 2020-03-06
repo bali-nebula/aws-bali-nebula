@@ -4,7 +4,7 @@ SCRIPTS=`dirname $0`
 echo
 echo "Deleting the cloud formation stacks..."
 aws --region us-east-1 cloudformation delete-stack \
-    --stack-name bali-nebula-services-us-east-1
+    --stack-name craterdog-bali-nebula-us-east-1
 
 echo
 echo "Done."

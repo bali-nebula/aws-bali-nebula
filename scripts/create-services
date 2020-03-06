@@ -5,16 +5,16 @@ echo
 echo "Pushing out the latest version of the cloud formation templates to S3..."
 aws --region us-east-1 s3api put-object \
     --bucket craterdog-aws-us-east-1 \
-    --key templates/services.json \
+    --key templates/bali-nebula.json \
     --content-type "application/json" \
-    --body templates/services.json
+    --body templates/bali-nebula.json
 
 echo
 echo "Creating the cloud formation stacks..."
 aws --region us-east-1 cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
-    --stack-name bali-nebula-services-us-east-1 \
-    --template-url https://s3.amazonaws.com/craterdog-aws-us-east-1/templates/services.json 
+    --stack-name craterdog-bali-nebula-us-east-1 \
+    --template-url https://s3.amazonaws.com/craterdog-aws-us-east-1/templates/bali-nebula.json 
 
 echo
 echo "Done."
