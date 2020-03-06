@@ -1,5 +1,4 @@
 #!/bin/bash
-
 SCRIPTS=`dirname $0`
 
 if [ `cat ${SCRIPTS}/test-color.txt` = "blue" ]; then

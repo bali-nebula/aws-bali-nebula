@@ -1,4 +1,5 @@
 #!/bin/bash
+SCRIPTS=`dirname $0`
 
 echo "Pushing the latest version of the template out to S3..."
 aws --region us-east-1 s3api put-object \
@@ -8,7 +9,7 @@ aws --region us-east-1 s3api put-object \
     --body templates/websites.json
 echo
 
-echo "Updating the cloud formation stack..."
+echo "Creating the cloud formation stack..."
 aws --region us-east-1 cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
     --stack-name craterdog-websites-us-east-1 \

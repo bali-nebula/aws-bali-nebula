@@ -1,4 +1,5 @@
 #!/bin/bash
+SCRIPTS=`dirname $0`
 
 echo "Pushing out the latest style sheets to S3..."
 for file in `find content -type f | grep "\.css"`; do
