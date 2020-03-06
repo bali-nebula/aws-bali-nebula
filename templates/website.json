@@ -13,7 +13,7 @@
     "LogBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-logs-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-logs-${AWS::Region}" },
         "AccessControl": "LogDeliveryWrite",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
@@ -35,7 +35,7 @@
       "Type": "AWS::S3::Bucket",
       "DependsOn": [ "CloudFrontIdentity" ],
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-website-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-website-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
@@ -102,7 +102,7 @@
           "Origins": [
             {
               "Id": "S3Origin",
-              "DomainName": "craterdog-bali-website-us-east-1.s3.amazonaws.com",
+              "DomainName": "craterdog-website-us-east-1.s3.amazonaws.com",
               "S3OriginConfig": {
                 "OriginAccessIdentity": {
                   "Fn::Join": [ "/", [ "origin-access-identity", "cloudfront", { "Ref": "CloudFrontIdentity" } ] ]
@@ -124,7 +124,7 @@
             }
           },
           "Logging": {
-            "Bucket": { "Fn::Sub": "craterdog-bali-logs-${AWS::Region}.s3.amazonaws.com" },
+            "Bucket": { "Fn::Sub": "craterdog-logs-${AWS::Region}.s3.amazonaws.com" },
             "IncludeCookies" : false,
             "Prefix" : "craterdog.net/"
           }

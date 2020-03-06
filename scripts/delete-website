@@ -1,0 +1,14 @@
+#!/bin/bash
+SCRIPTS=`dirname $0`
+
+echo "Emptying the website bucket..."
+${SCRIPTS}/empty-bucket craterdog-website-us-east-1
+
+echo "Emptying the logs bucket..."
+${SCRIPTS}/empty-bucket craterdog-logs-us-east-1
+
+echo "Deleting the cloud formation stack..."
+aws --region us-east-1 cloudformation delete-stack \
+    --stack-name craterdog-website-us-east-1
+
+echo "Done."

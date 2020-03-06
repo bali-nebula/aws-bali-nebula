@@ -5,7 +5,7 @@
     "StaticBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-statics-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "bali-nebula-statics-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
@@ -18,7 +18,7 @@
     "NamesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-names-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "bali-nebula-names-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
@@ -31,7 +31,7 @@
     "DraftsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-drafts-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "bali-nebula-drafts-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
@@ -57,7 +57,7 @@
     "DocumentsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-documents-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "bali-nebula-documents-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
@@ -70,7 +70,7 @@
     "MessagesBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-bali-messages-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "bali-nebula-messages-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,

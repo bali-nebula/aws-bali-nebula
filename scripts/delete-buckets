@@ -13,3 +13,11 @@ ${SCRIPTS}/empty-bucket bali-nebula-documents-us-west-2
 echo "Emptying the messages bucket..."
 ${SCRIPTS}/empty-bucket bali-nebula-messages-us-west-2
 
+echo "Emptying the statics bucket..."
+${SCRIPTS}/empty-bucket bali-nebula-statics-us-west-2
+
+echo "Deleting the cloud formation stacks..."
+aws --region us-west-2 cloudformation delete-stack \
+    --stack-name bali-nebula-buckets-us-east-1
+
+echo "Done."

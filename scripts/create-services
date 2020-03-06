@@ -1,31 +1,32 @@
 #!/bin/bash
+SCRIPTS=`dirname $0`
 
 echo
 echo "Emptying the static bucket..."
-./scripts/empty-bucket craterdog-bali-statics-us-west-2
+${SCRIPTS}/empty-bucket bali-nebula-statics-us-west-2
 
 echo
 echo "Pushing out the latest version of the style sheets and images to S3..."
 aws --region us-west-2 s3api put-object \
-    --bucket craterdog-bali-statics-us-west-2 \
+    --bucket bali-nebula-statics-us-west-2 \
     --key styles/BDN.css \
     --content-type "text/css" \
     --body content/styles/BDN.css
 
 aws --region us-west-2 s3api put-object \
-    --bucket craterdog-bali-statics-us-west-2 \
+    --bucket bali-nebula-statics-us-west-2 \
     --key images/CraterDogLogo.png \
     --content-type "image/png" \
     --body content/images/CraterDogLogo.png
 
 aws --region us-west-2 s3api put-object \
-    --bucket craterdog-bali-statics-us-west-2 \
+    --bucket bali-nebula-statics-us-west-2 \
     --key images/PoweredByLogo.png \
     --content-type "image/png" \
     --body content/images/PoweredByLogo.png
 
 aws --region us-west-2 s3api put-object \
-    --bucket craterdog-bali-statics-us-west-2 \
+    --bucket bali-nebula-statics-us-west-2 \
     --key images/favicon.ico \
     --content-type "image/x-icon" \
     --body content/images/favicon.ico
@@ -33,28 +34,28 @@ aws --region us-west-2 s3api put-object \
 echo
 echo "Pushing out the latest version of the cloud formation templates to S3..."
 aws --region us-east-1 s3api put-object \
-    --bucket craterdog-bali-environment-us-east-1 \
-    --key templates/bali-nebula-static.json \
+    --bucket bali-nebula-environment-us-east-1 \
+    --key templates/static.json \
     --content-type "application/json" \
-    --body templates/bali-nebula-static.json
+    --body templates/static.json
 
 aws --region us-east-1 s3api put-object \
-    --bucket craterdog-bali-environment-us-east-1 \
-    --key templates/bali-nebula-repository.json \
+    --bucket bali-nebula-environment-us-east-1 \
+    --key templates/repository.json \
     --content-type "application/json" \
-    --body templates/bali-nebula-repository.json
+    --body templates/repository.json
 
 echo
 echo "Creating the cloud formation stacks..."
 aws --region us-east-1 cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
-    --stack-name craterdog-bali-static-us-east-1 \
-    --template-url https://s3.amazonaws.com/craterdog-bali-environment-us-east-1/templates/bali-nebula-static.json 
+    --stack-name bali-nebula-static-us-east-1 \
+    --template-url https://s3.amazonaws.com/bali-nebula-environment-us-east-1/templates/static.json 
 
 aws --region us-east-1 cloudformation create-stack \
     --capabilities CAPABILITY_IAM \
-    --stack-name craterdog-bali-repository-us-east-1 \
-    --template-url https://s3.amazonaws.com/craterdog-bali-environment-us-east-1/templates/bali-nebula-repository.json 
+    --stack-name bali-nebula-repository-us-east-1 \
+    --template-url https://s3.amazonaws.com/bali-nebula-environment-us-east-1/templates/repository.json 
 
 echo
 echo "Done."

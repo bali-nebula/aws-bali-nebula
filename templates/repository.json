@@ -17,7 +17,7 @@
     "EnvironmentBucket": {
       "Description": "The name of the S3 bucket that contains the environment configuration files.",
       "Type": "String",
-      "Default": "craterdog-bali-environment-us-east-1"
+      "Default": "bali-nebula-environment-us-east-1"
     }
   },
   "Conditions": {
@@ -166,8 +166,8 @@
                     "s3:GetObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-names-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-documents-us-west-2/*"
+                    "arn:aws:s3:::bali-nebula-names-us-west-2/*",
+                    "arn:aws:s3:::bali-nebula-documents-us-west-2/*"
                   ]
                 },
                 {
@@ -178,8 +178,8 @@
                     "s3:DeleteObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-drafts-us-west-2/*",
-                    "arn:aws:s3:::craterdog-bali-messages-us-west-2/*"
+                    "arn:aws:s3:::bali-nebula-drafts-us-west-2/*",
+                    "arn:aws:s3:::bali-nebula-messages-us-west-2/*"
                   ]
                 },
                 {
@@ -188,7 +188,7 @@
                     "s3:ListBucket"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::craterdog-bali-messages-us-west-2"
+                    "arn:aws:s3:::bali-nebula-messages-us-west-2"
                   ]
                 },
                 {
