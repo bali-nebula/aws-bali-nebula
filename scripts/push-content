@@ -68,5 +68,5 @@ echo
 
 echo "Invalidating the CloudFront caches..."
 aws cloudfront create-invalidation \
-    --distribution-id EUVZT0SMNOJGQ \
+    --distribution-id E1UKGH398XT9IF \
     --paths "/*"
