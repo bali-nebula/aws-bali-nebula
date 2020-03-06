@@ -24,7 +24,7 @@
                 }
               },
               "Action": "s3:GetObject",
-              "Resource": { "Fn::Sub": "arn:aws:s3:::craterdog-websites-${AWS::Region}/craterdog" }
+              "Resource": { "Fn::Sub": "arn:aws:s3:::craterdog-websites-${AWS::Region}/*" }
             }
           ]
         }
