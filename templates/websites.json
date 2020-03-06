@@ -10,48 +10,10 @@
         }
       }
     },
-    "LogBucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-logs-${AWS::Region}" },
-        "AccessControl": "LogDeliveryWrite",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        },
-        "LifecycleConfiguration": {
-          "Rules": [
-            {
-              "ExpirationInDays": 7,
-              "Status": "Enabled"
-            }
-          ]
-        }
-      }
-    },
-    "WebsiteBucket": {
-      "Type": "AWS::S3::Bucket",
-      "DependsOn": [ "CloudFrontIdentity" ],
-      "Properties": {
-        "BucketName": { "Fn::Sub": "craterdog-website-${AWS::Region}" },
-        "AccessControl": "Private",
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls" : true,
-          "BlockPublicPolicy" : true,
-          "IgnorePublicAcls" : true,
-          "RestrictPublicBuckets" : true
-        }
-      }
-    },
-    "AccessPolicy": {
+    "CraterDogAccess": {
       "Type": "AWS::S3::BucketPolicy",
-      "DependsOn": [ "WebsiteBucket" ],
       "Properties": {
-        "Bucket": {
-          "Ref": "WebsiteBucket"
-        },
+        "Bucket": { "Fn::Sub": "craterdog-websites-${AWS::Region}" },
         "PolicyDocument": {
           "Statement": [
             {
@@ -62,9 +24,7 @@
                 }
               },
               "Action": "s3:GetObject",
-              "Resource": {
-                "Fn::Join": [ "", [ "arn:aws:s3:::", { "Ref": "WebsiteBucket" }, "/*" ] ]
-              }
+              "Resource": { "Fn::Sub": "arn:aws:s3:::craterdog-websites-${AWS::Region}/craterdog" }
             }
           ]
         }
@@ -72,7 +32,6 @@
     },
     "CraterDogDomain": {
       "Type": "AWS::CloudFront::Distribution",
-      "DependsOn": [ "LogBucket", "WebsiteBucket" ],
       "Properties": {
         "DistributionConfig": {
           "Aliases": ["craterdog.net"],
@@ -88,7 +47,7 @@
           "Origins": [
             {
               "Id": "S3Origin",
-              "DomainName": "craterdog-website-us-east-1.s3.amazonaws.com",
+              "DomainName": "craterdog-websites-us-east-1.s3.amazonaws.com",
               "S3OriginConfig": {
                 "OriginAccessIdentity": {
                   "Fn::Join": [ "/", [ "origin-access-identity", "cloudfront", { "Ref": "CloudFrontIdentity" } ] ]
@@ -112,7 +71,7 @@
           "Logging": {
             "Bucket": { "Fn::Sub": "craterdog-logs-${AWS::Region}.s3.amazonaws.com" },
             "IncludeCookies" : false,
-            "Prefix" : "craterdog.net/"
+            "Prefix" : "craterdog/"
           }
         }
       }

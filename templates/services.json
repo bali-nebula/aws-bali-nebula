@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "This template creates the API gateway and lambda functions needed to implement the Bali Nebula Repository Service.",
+  "Description": "This cloud formation template is used to setup the Bali Nebula™ environment.",
   "Parameters": {
     "ServiceName": {
       "Description": "The name of the lambda function.",
@@ -13,11 +13,6 @@
       "Default": "green",
       "AllowedValues" : ["blue", "green"],
       "ConstraintDescription" : "You must specify either 'blue' or 'green'."
-    },
-    "EnvironmentBucket": {
-      "Description": "The name of the S3 bucket that contains the environment configuration files.",
-      "Type": "String",
-      "Default": "bali-nebula-environment-us-east-1"
     }
   },
   "Conditions": {
@@ -34,12 +29,224 @@
        ]
     }
   },
-  "Outputs": {
-    "ApiId": {
-      "Value": { "Ref": "ServiceApi" }
-    }
-  },
   "Resources": {
+    "NebulaDomain": {
+      "Type": "AWS::ApiGateway::DomainName",
+      "Properties": {
+        "RegionalCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/066d667f-ec36-486f-9fca-42136deb31bd",
+        "DomainName": "bali-nebula.net",
+        "EndpointConfiguration" : {
+          "Types" : [ "REGIONAL" ]
+        }
+      }
+    },
+    "NebulaRouting": {
+      "Type" : "AWS::Route53::RecordSet",
+      "DependsOn": [ "NebulaDomain" ],
+      "Properties" : {
+        "Name": "bali-nebula.net.",
+        "Comment" : "Route all service requests to the service API gateway endpoint,",
+        "Type" : "A",
+        "HostedZoneName" : "bali-nebula.net.",
+        "AliasTarget" : {
+          "DNSName": { "Fn::GetAtt": [ "NebulaDomain", "RegionalDomainName" ] },
+          "EvaluateTargetHealth" : false,
+          "HostedZoneId" : "Z1UJRXOUMOOFQ8"
+        }
+      }
+    },
+    "StaticAPI": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "Bali Nebula Static Content",
+        "Description": "This API allows a client application to retrieve Bali Nebula static content.",
+        "BinaryMediaTypes": [
+          "*/*"
+        ],
+        "EndpointConfiguration": { "Types": [ "REGIONAL" ] }
+      }
+    },
+    "StaticTypeResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "DependsOn": [ "StaticAPI" ],
+      "Properties": {
+        "ParentId": { "Fn::GetAtt": [ "StaticAPI", "RootResourceId" ] },
+        "RestApiId": { "Ref": "StaticAPI" },
+        "PathPart": "{type}"
+      }
+    },
+    "StaticContentResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "DependsOn": [ "StaticTypeResource" ],
+      "Properties": {
+        "ParentId": { "Ref": "StaticTypeResource" },
+        "RestApiId": { "Ref": "StaticAPI" },
+        "PathPart": "{content}"
+      }
+    },
+    "StaticContentMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "DependsOn": [ "StaticContentResource" ],
+      "Properties": {
+        "RestApiId": { "Ref": "StaticAPI" },
+        "ResourceId": { "Ref": "StaticContentResource" },
+        "AuthorizationType": "NONE",
+        "ApiKeyRequired": false,
+        "HttpMethod": "GET",
+        "RequestParameters": {
+          "method.request.path.type": true,
+          "method.request.path.content": true,
+          "method.request.header.Accept": false
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": 200,
+            "ResponseParameters": {
+              "method.response.header.Content-Type": true,
+              "method.response.header.Content-Length": true
+            }
+          },
+          {
+            "StatusCode": 400
+          },
+          {
+            "StatusCode": 500
+          }
+        ],
+        "Integration": {
+          "Type": "AWS",
+          "Credentials": { "Fn::GetAtt": [ "StaticRole", "Arn" ] },
+          "IntegrationHttpMethod": "GET",
+          "RequestParameters": {
+            "integration.request.path.type": "method.request.path.type",
+            "integration.request.path.content": "method.request.path.content",
+            "integration.request.header.Accept": "method.request.header.Accept",
+            "integration.request.header.x-amz-acl": "'authenticated-read'"
+          },
+          "PassthroughBehavior": "WHEN_NO_MATCH",
+          "IntegrationResponses": [
+            {
+              "StatusCode": 200,
+              "ResponseParameters": {
+                "method.response.header.Content-Type": "integration.response.header.Content-Type",
+                "method.response.header.Content-Length": "integration.response.header.Content-Length"
+              }
+            },
+            {
+              "StatusCode": 400,
+              "SelectionPattern": "4\\d{2}"
+            },
+            {
+              "StatusCode": 500,
+              "SelectionPattern": "5\\d{2}"
+            }
+          ],
+          "Uri": "arn:aws:apigateway:us-east-1:s3:path/craterdog-websites-us-east-1/craterdog/{type}/{content}"
+        }
+      }
+    },
+    "StaticDeployment": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "DependsOn": [ "StaticContentMethod" ],
+      "Properties": {
+        "RestApiId": { "Ref": "StaticAPI" }
+      }
+    },
+    "StaticBlueStage": {
+      "Type": "AWS::ApiGateway::Stage",
+      "DependsOn": [ "StaticDeployment" ],
+      "Properties": {
+        "DeploymentId": { "Ref": "StaticDeployment" },
+        "RestApiId": { "Ref": "StaticAPI" },
+        "StageName": "blue",
+        "Description" : "This stage deploys the Bali Nebula static content to the blue environment.",
+        "Variables" : { "EnvironmentColor": "blue" },
+        "TracingEnabled" : false,
+        "CacheClusterEnabled" : false,
+        "CacheClusterSize" : "0.5"
+      }
+    },
+    "StaticBluePath": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "DependsOn": [ "StaticBlueStage" ],
+      "Properties": {
+        "RestApiId": { "Ref": "StaticAPI" },
+        "DomainName": "bali-nebula.net",
+        "BasePath": {
+          "Fn::If" : [
+            "BlueIsTesting",
+            "test-static",
+            "static"
+          ]
+        },
+        "Stage": "blue"
+      }
+    },
+    "StaticGreenStage": {
+      "Type": "AWS::ApiGateway::Stage",
+      "DependsOn": [ "StaticDeployment" ],
+      "Properties": {
+        "DeploymentId": { "Ref": "StaticDeployment" },
+        "RestApiId": { "Ref": "StaticAPI" },
+        "StageName": "green",
+        "Description" : "This stage deploys the Bali Nebula static content to the green environment.",
+        "Variables" : { "EnvironmentColor": "green" },
+        "TracingEnabled" : false,
+        "CacheClusterEnabled" : false,
+        "CacheClusterSize" : "0.5"
+      }
+    },
+    "StaticGreenPath": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "DependsOn": [ "StaticGreenStage" ],
+      "Properties": {
+        "RestApiId": { "Ref": "StaticAPI" },
+        "DomainName": "bali-nebula.net",
+        "BasePath": {
+          "Fn::If" : [
+            "GreenIsTesting",
+            "test-static",
+            "static"
+          ]
+        },
+        "Stage": "green"
+      }
+    },
+    "StaticRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": { "Service": ["apigateway.amazonaws.com"] },
+              "Action": ["sts:AssumeRole"]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "S3Policy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::craterdog-websites-us-east-1/craterdog/*"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "ServiceApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
@@ -48,7 +255,7 @@
         "EndpointConfiguration": { "Types": [ "REGIONAL" ] }
       }
     },
-    "ProxyResource": {
+    "ServiceResource": {
       "Type": "AWS::ApiGateway::Resource",
       "DependsOn": [ "ServiceApi" ],
       "Properties": {
@@ -57,12 +264,12 @@
         "PathPart": "{proxy+}"
       }
     },
-    "ProxyMethod": {
+    "ServiceMethod": {
       "Type": "AWS::ApiGateway::Method",
-      "DependsOn": [ "ProxyResource" ],
+      "DependsOn": [ "ServiceResource" ],
       "Properties": {
         "RestApiId": { "Ref": "ServiceApi" },
-        "ResourceId": { "Ref": "ProxyResource" },
+        "ResourceId": { "Ref": "ServiceResource" },
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
         "Integration": {
@@ -74,12 +281,12 @@
     },
     "ServiceDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [ "ProxyMethod" ],
+      "DependsOn": [ "ServiceMethod" ],
       "Properties": {
         "RestApiId": { "Ref": "ServiceApi" }
       }
     },
-    "BlueStage": {
+    "ServiceBlueStage": {
       "Type": "AWS::ApiGateway::Stage",
       "DependsOn": [ "ServiceDeployment" ],
       "Properties": {
@@ -93,9 +300,9 @@
         "CacheClusterSize" : "0.5"
       }
     },
-    "BluePath": {
+    "ServiceBluePath": {
       "Type": "AWS::ApiGateway::BasePathMapping",
-      "DependsOn": [ "BlueStage" ],
+      "DependsOn": [ "ServiceBlueStage" ],
       "Properties": {
         "RestApiId": { "Ref": "ServiceApi" },
         "DomainName": "bali-nebula.net",
@@ -109,7 +316,7 @@
         "Stage": "blue"
       }
     },
-    "GreenStage": {
+    "ServiceGreenStage": {
       "Type": "AWS::ApiGateway::Stage",
       "DependsOn": [ "ServiceDeployment" ],
       "Properties": {
@@ -123,9 +330,9 @@
         "CacheClusterSize" : "0.5"
       }
     },
-    "GreenPath": {
+    "ServiceGreenPath": {
       "Type": "AWS::ApiGateway::BasePathMapping",
-      "DependsOn": [ "GreenStage" ],
+      "DependsOn": [ "ServiceGreenStage" ],
       "Properties": {
         "RestApiId": { "Ref": "ServiceApi" },
         "DomainName": "bali-nebula.net",
@@ -219,7 +426,7 @@
         "MemorySize": 256,
         "Timeout": 10,
         "Code": {
-          "S3Bucket": { "Ref": "EnvironmentBucket" },
+          "S3Bucket": "craterdog-aws-us-east-1",
           "S3Key": { "Fn::Sub": "lambdas/${ServiceName}.zip" }
         },
         "Handler": { "Fn::Sub": "${ServiceName}.handler" }

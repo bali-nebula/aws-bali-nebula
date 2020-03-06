@@ -2,10 +2,31 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This cloud formation template is used to setup the S3 buckets for the Bali Nebula™.",
   "Resources": {
-    "StaticBucket": {
+    "LogsBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": { "Fn::Sub": "bali-nebula-statics-${AWS::Region}" },
+        "BucketName": { "Fn::Sub": "craterdog-logs-${AWS::Region}" },
+        "AccessControl": "LogDeliveryWrite",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls" : true,
+          "BlockPublicPolicy" : true,
+          "IgnorePublicAcls" : true,
+          "RestrictPublicBuckets" : true
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 7,
+              "Status": "Enabled"
+            }
+          ]
+        }
+      }
+    },
+    "WebsitesBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": { "Fn::Sub": "craterdog-websites-${AWS::Region}" },
         "AccessControl": "Private",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls" : true,
@@ -45,7 +66,6 @@
         "LifecycleConfiguration": {
           "Rules": [
             {
-              "Id": "DraftExpiration",
               "ExpirationInDays": 7,
               "NoncurrentVersionExpirationInDays": 1,
               "Status": "Enabled"
@@ -77,6 +97,14 @@
           "BlockPublicPolicy" : true,
           "IgnorePublicAcls" : true,
           "RestrictPublicBuckets" : true
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 7,
+              "Status": "Enabled"
+            }
+          ]
         }
       }
     }

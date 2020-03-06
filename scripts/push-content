@@ -4,7 +4,7 @@ echo "Pushing out the latest style sheets to S3..."
 for file in `find content -type f | grep "\.css"`; do
     echo "  ${file:8}";
     aws --region us-east-1 s3api put-object \
-        --bucket craterdog-website-us-east-1 \
+        --bucket craterdog-websites-us-east-1 \
         --content-type text/css \
         --key ${file:8} \
         --body ${file}
@@ -15,7 +15,7 @@ echo "Pushing out the latest web pages to S3..."
 for file in `find content -type f | grep "\.html"`; do
     echo "  ${file:8}";
     aws --region us-east-1 s3api put-object \
-        --bucket craterdog-website-us-east-1 \
+        --bucket craterdog-websites-us-east-1 \
         --content-type text/html \
         --key ${file:8} \
         --body ${file}
@@ -26,7 +26,7 @@ echo "Pushing out the latest javascript to S3..."
 for file in `find content -type f | grep "\.js"`; do
     echo "  ${file:8}";
     aws --region us-east-1 s3api put-object \
-        --bucket craterdog-website-us-east-1 \
+        --bucket craterdog-websites-us-east-1 \
         --content-type text/javascript \
         --key ${file:8} \
         --body ${file}
@@ -37,7 +37,7 @@ echo "Pushing out the latest JPEG images to S3..."
 for file in `find content -type f | grep -E "\.jpe?g"`; do
     echo "  ${file:8}";
     aws --region us-east-1 s3api put-object \
-        --bucket craterdog-website-us-east-1 \
+        --bucket craterdog-websites-us-east-1 \
         --content-type image/jpeg \
         --key ${file:8} \
         --body ${file}
@@ -48,7 +48,7 @@ echo "Pushing out the latest PNG images to S3..."
 for file in `find content -type f | grep "\.png"`; do
     echo "  ${file:8}";
     aws --region us-east-1 s3api put-object \
-        --bucket craterdog-website-us-east-1 \
+        --bucket craterdog-websites-us-east-1 \
         --content-type image/png \
         --key ${file:8} \
         --body ${file}
@@ -59,7 +59,7 @@ echo "Pushing out the latest ICO images to S3..."
 for file in `find content -type f | grep "\.ico"`; do
     echo "  ${file:8}";
     aws --region us-east-1 s3api put-object \
-        --bucket craterdog-website-us-east-1 \
+        --bucket craterdog-websites-us-east-1 \
         --content-type image/x-icon \
         --key ${file:8} \
         --body ${file}

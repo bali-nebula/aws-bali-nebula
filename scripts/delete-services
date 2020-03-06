@@ -3,10 +3,7 @@
 echo
 echo "Deleting the cloud formation stacks..."
 aws --region us-east-1 cloudformation delete-stack \
-    --stack-name bali-nebula-static-us-east-1
-
-aws --region us-east-1 cloudformation delete-stack \
-    --stack-name bali-nebula-repository-us-east-1
+    --stack-name bali-nebula-services-us-east-1
 
 echo
 echo "Done."
