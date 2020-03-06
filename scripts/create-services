@@ -3,30 +3,30 @@ SCRIPTS=`dirname $0`
 
 echo
 echo "Emptying the static bucket..."
-${SCRIPTS}/empty-bucket bali-nebula-statics-us-west-2
+${SCRIPTS}/empty-bucket bali-nebula-statics-us-east-1
 
 echo
 echo "Pushing out the latest version of the style sheets and images to S3..."
-aws --region us-west-2 s3api put-object \
-    --bucket bali-nebula-statics-us-west-2 \
+aws --region us-east-1 s3api put-object \
+    --bucket bali-nebula-statics-us-east-1 \
     --key styles/BDN.css \
     --content-type "text/css" \
     --body content/styles/BDN.css
 
-aws --region us-west-2 s3api put-object \
-    --bucket bali-nebula-statics-us-west-2 \
+aws --region us-east-1 s3api put-object \
+    --bucket bali-nebula-statics-us-east-1 \
     --key images/CraterDogLogo.png \
     --content-type "image/png" \
     --body content/images/CraterDogLogo.png
 
-aws --region us-west-2 s3api put-object \
-    --bucket bali-nebula-statics-us-west-2 \
+aws --region us-east-1 s3api put-object \
+    --bucket bali-nebula-statics-us-east-1 \
     --key images/PoweredByLogo.png \
     --content-type "image/png" \
     --body content/images/PoweredByLogo.png
 
-aws --region us-west-2 s3api put-object \
-    --bucket bali-nebula-statics-us-west-2 \
+aws --region us-east-1 s3api put-object \
+    --bucket bali-nebula-statics-us-east-1 \
     --key images/favicon.ico \
     --content-type "image/x-icon" \
     --body content/images/favicon.ico

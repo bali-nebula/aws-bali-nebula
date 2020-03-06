@@ -9,7 +9,7 @@ aws --region us-east-1 s3api put-object \
 echo
 
 echo "Updating the cloudformation stack..."
-aws --region us-west-2 cloudformation create-stack \
+aws --region us-east-1 cloudformation create-stack \
     --stack-name bali-nebula-buckets-us-east-1 \
     --template-url https://s3.amazonaws.com/bali-nebula-environment-us-east-1/templates/buckets.json 
 echo

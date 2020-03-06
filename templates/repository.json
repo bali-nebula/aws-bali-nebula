@@ -166,8 +166,8 @@
                     "s3:GetObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::bali-nebula-names-us-west-2/*",
-                    "arn:aws:s3:::bali-nebula-documents-us-west-2/*"
+                    "arn:aws:s3:::bali-nebula-names-us-east-1/*",
+                    "arn:aws:s3:::bali-nebula-documents-us-east-1/*"
                   ]
                 },
                 {
@@ -178,8 +178,8 @@
                     "s3:DeleteObject"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::bali-nebula-drafts-us-west-2/*",
-                    "arn:aws:s3:::bali-nebula-messages-us-west-2/*"
+                    "arn:aws:s3:::bali-nebula-drafts-us-east-1/*",
+                    "arn:aws:s3:::bali-nebula-messages-us-east-1/*"
                   ]
                 },
                 {
@@ -188,7 +188,7 @@
                     "s3:ListBucket"
                   ],
                   "Resource": [
-                    "arn:aws:s3:::bali-nebula-messages-us-west-2"
+                    "arn:aws:s3:::bali-nebula-messages-us-east-1"
                   ]
                 },
                 {

@@ -2,14 +2,14 @@
 SCRIPTS=`dirname $0`
 
 echo "Emptying the names bucket..."
-${SCRIPTS}/empty-bucket bali-nebula-names-us-west-2
+${SCRIPTS}/empty-bucket bali-nebula-names-us-east-1
 
 echo "Emptying the drafts bucket..."
-${SCRIPTS}/empty-bucket bali-nebula-drafts-us-west-2
+${SCRIPTS}/empty-bucket bali-nebula-drafts-us-east-1
 
 echo "Emptying the documents bucket..."
-${SCRIPTS}/empty-bucket bali-nebula-documents-us-west-2
+${SCRIPTS}/empty-bucket bali-nebula-documents-us-east-1
 
 echo "Emptying the messages bucket..."
-${SCRIPTS}/empty-bucket bali-nebula-messages-us-west-2
+${SCRIPTS}/empty-bucket bali-nebula-messages-us-east-1
 
