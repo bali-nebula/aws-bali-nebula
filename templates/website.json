@@ -42,20 +42,6 @@
           "BlockPublicPolicy" : true,
           "IgnorePublicAcls" : true,
           "RestrictPublicBuckets" : true
-        },
-        "CorsConfiguration": {
-          "CorsRules": [
-            {
-              "AllowedMethods": [
-                "HEAD",
-                "GET"
-              ],
-              "AllowedOrigins": [
-                { "Ref": "CloudFrontIdentity" }
-              ],
-              "MaxAge": 3000
-            }
-          ]
         }
       }
     },
