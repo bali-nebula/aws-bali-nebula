@@ -75,5 +75,5 @@ echo
 
 echo "Invalidating the CloudFront caches..."
 aws cloudfront create-invalidation \
-    --distribution-id E23I6LCIAXPDCP \
-    --paths "/*"
+    --distribution-id E27PJ2OE0X3C71 \
+    --paths "/cratedog/*"

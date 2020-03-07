@@ -48,6 +48,7 @@
             {
               "Id": "S3Origin",
               "DomainName": "craterdog-websites-us-east-1.s3.amazonaws.com",
+              "OriginPath": "/craterdog",
               "S3OriginConfig": {
                 "OriginAccessIdentity": {
                   "Fn::Join": [ "/", [ "origin-access-identity", "cloudfront", { "Ref": "CloudFrontIdentity" } ] ]
