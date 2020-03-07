@@ -1,5 +1,7 @@
 #!/bin/bash
 SCRIPTS=`dirname $0`
+DISTRIBUTION=$1
+paths=""
 
 echo "Pushing out the latest style sheets to S3..."
 for file in `find content -type f | grep "\.css"`; do
@@ -10,6 +12,7 @@ for file in `find content -type f | grep "\.css"`; do
         --content-type text/css \
         --key ${key} \
         --body ${file}
+    paths="$paths /${file:8}"
 done
 echo
 
@@ -22,6 +25,7 @@ for file in `find content -type f | grep "\.html"`; do
         --content-type text/html \
         --key ${key} \
         --body ${file}
+    paths="$paths /${file:8}"
 done
 echo
 
@@ -34,6 +38,7 @@ for file in `find content -type f | grep "\.js"`; do
         --content-type text/javascript \
         --key ${key} \
         --body ${file}
+    paths="$paths /${file:8}"
 done
 echo
 
@@ -46,6 +51,7 @@ for file in `find content -type f | grep -E "\.jpe?g"`; do
         --content-type image/jpeg \
         --key ${key} \
         --body ${file}
+    paths="$paths /${file:8}"
 done
 echo
 
@@ -58,6 +64,7 @@ for file in `find content -type f | grep "\.png"`; do
         --content-type image/png \
         --key ${key} \
         --body ${file}
+    paths="$paths /${file:8}"
 done
 echo
 
@@ -70,10 +77,12 @@ for file in `find content -type f | grep "\.ico"`; do
         --content-type image/x-icon \
         --key ${key} \
         --body ${file}
+    paths="$paths /${file:8}"
 done
 echo
 
-echo "Invalidating the CloudFront caches..."
+echo "Invalidating the CloudFront cache..."
 aws cloudfront create-invalidation \
-    --distribution-id E27PJ2OE0X3C71 \
-    --paths "/cratedog/*"
+    --distribution-id $DISTRIBUTION \
+    --paths $paths
+echo
