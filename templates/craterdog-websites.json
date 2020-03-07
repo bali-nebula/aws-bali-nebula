@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "This cloud formation template is used to setup the Crater Dog Technologies™ website.",
+  "Description": "This cloud formation template is used to setup the Crater Dog Technologies™ websites.",
   "Resources": {
     "CloudFrontIdentity": {
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",

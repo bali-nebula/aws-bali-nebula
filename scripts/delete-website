@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPTS=`dirname $0`
 
-echo "Emptying the website bucket..."
+echo "Emptying the websites bucket..."
 ${SCRIPTS}/empty-bucket craterdog-websites-us-east-1
 
 echo "Emptying the logs bucket..."
