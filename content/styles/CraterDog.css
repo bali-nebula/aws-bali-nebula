@@ -196,7 +196,7 @@ pre {
 .label {
     position: absolute;
     width: 100%; /* Set the width of the title */
-    bottom: 5%; /* How far down from the top of the background image the title is */
+    bottom: 0%; /* How far up from the bottom of the background image the title is */
     font-size: 25px;
     text-align: center;
 }
