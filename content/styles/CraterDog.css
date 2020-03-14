@@ -156,6 +156,7 @@ pre {
 
 .footer {
     margin: 50px;
+    color: #1FCE53;
     font-style: italic;
     text-align: center;
 }
@@ -177,7 +178,7 @@ pre {
     width: 60%; /* Set the width of the title */
     left: 16px;
     top: 60%; /* How far down from the top of the background image the title is */
-    font-size: 4vw;
+    font-size: 3.5vw;
     text-align: left;
 }
 
