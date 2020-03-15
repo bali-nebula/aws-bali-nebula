@@ -195,18 +195,18 @@ pre {
 .topic {
     position: relative;
     display: inline-block; /* Make the width of box same as image */
-    width: 33%;
+    width: 32%;
     text-align: center;
 }
 
 .button {
-    width: 33%;
+    width: 34%;
 }
 
 .label {
     position: absolute;
-    width: 100%; /* Set the width of the title */
-    bottom: 0%; /* How far up from the bottom of the background image the title is */
+    width: 100%; /* Set the width of the label */
+    bottom: 0%; /* How far up from the bottom of the button image the label is */
     font-size: 2.3vw;
     text-align: center;
 }
