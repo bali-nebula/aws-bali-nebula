@@ -125,23 +125,21 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-body {
-    background-color: #020202;
-}
-
 * {
+    padding: 0%;
+    margin: 0%;
     color: LightGray;
+    background-color: transparent;
     text-align: left;
     font-family: 'Roboto Light', sans-serif;
-    font-variant: small-caps;
-    padding: 0px;
-    background-color: transparent;
 }
 
-pre {
-    font-family: 'Roboto Mono', monospace;
-    margin: 0; /* a pre element defaults to a non-zero margin */
-    padding: 3px;
+a {
+    color: #B49FE4;
+}
+
+body {
+    background-color: #020202;
 }
 
 .header {
@@ -154,8 +152,8 @@ pre {
 }
 
 .footer {
-    margin: 50px;
-    color: #1FCE53;
+    margin: 3%;
+    color: #1FCE53;  /* green */
     font-size: 1.5vw;
     font-style: italic;
     text-align: center;
@@ -163,7 +161,6 @@ pre {
 
 .background {
     width: 100%;
-    height: auto;
 }
 
 .logo {
@@ -173,11 +170,19 @@ pre {
     height: 33%;
 }
 
+.icon {
+    position: absolute;
+    top: 2%;
+    left: 1%;
+    height: 55%;
+}
+
 .title {
     position: absolute;
     top: 50%; /* How far down from the top of the background image the title is */
     width: 60%; /* Set the width of the title */
-    left: 16px;
+    left: 1%;
+    font-variant: small-caps;
     font-size: 3vw;
     text-align: left;
 }
@@ -186,8 +191,8 @@ pre {
     position: absolute;
     top: 65%; /* How far down from the top of the background image the title is */
     width: 60%; /* Set the width of the description */
-    left: 30px;
-    color: #2198B1;
+    left: 3%;
+    color: #1696D5;  /* blue */
     font-size: 2vw;
     text-align: left;
 }
@@ -207,7 +212,26 @@ pre {
     position: absolute;
     width: 100%; /* Set the width of the label */
     bottom: 0%; /* How far up from the bottom of the button image the label is */
+    font-variant: small-caps;
     font-size: 2.3vw;
     text-align: center;
+}
+
+.diagram {
+    position: relative;
+    left: 10%;
+    width: 80%;
+}
+.list {
+    position: absolute;
+    left: 2%;
+    list-style-position: inside;
+}
+
+.item {
+    color: #1696D5;  /* blue */
+    font-size: 1.6vw;
+    margin: 1%;
+    text-indent: -3%;
 }
 
