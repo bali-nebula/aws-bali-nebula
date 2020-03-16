@@ -135,11 +135,16 @@
 }
 
 a {
-    color: #B49FE4;
+    color: #B49FE4;  /* purple */
 }
 
 body {
     background-color: #020202;
+}
+
+.highlight {
+    color: #1FCE53;  /* green */
+    font-style: italic;
 }
 
 .header {
@@ -153,9 +158,7 @@ body {
 
 .footer {
     margin: 3%;
-    color: #1FCE53;  /* green */
     font-size: 1.5vw;
-    font-style: italic;
     text-align: center;
 }
 
