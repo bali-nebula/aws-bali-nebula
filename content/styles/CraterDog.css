@@ -163,6 +163,13 @@ body {
     width: 100%;
 }
 
+.egg {
+    position: absolute;
+    top: 23%;
+    left: 46%;
+    width: 4%;
+}
+
 .logo {
     position: absolute;
     top: 2%;
