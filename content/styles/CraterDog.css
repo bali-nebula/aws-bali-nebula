@@ -197,6 +197,25 @@ body {
     text-align: left;
 }
 
+.profile {
+    margin: 1%;
+}
+
+.picture {
+    margin: 0% 1% 0% 2%;
+    width: 12%;
+    float: left;
+}
+
+.paragraph {
+    margin: 0% 2% 0% 1%;
+    width: 82%;
+    float: right;
+    color: #1696D5;  /* blue */
+    font-size: 2vw;
+    text-align: justify;
+}
+
 .topic {
     position: relative;
     display: inline-block; /* Make the width of box same as image */
