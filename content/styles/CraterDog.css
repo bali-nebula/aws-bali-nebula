@@ -172,7 +172,7 @@ body {
 
 .icon {
     position: absolute;
-    top: 15%;
+    top: 12%;
     left: 0%;
     height: 55%;
 }
@@ -190,7 +190,7 @@ body {
 .description {
     position: absolute;
     top: 65%; /* How far down from the top of the background image the title is */
-    width: 60%; /* Set the width of the description */
+    width: 62%; /* Set the width of the description */
     left: 3%;
     color: #1696D5;  /* blue */
     font-size: 2vw;
