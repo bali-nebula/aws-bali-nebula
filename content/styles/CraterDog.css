@@ -172,15 +172,15 @@ body {
 
 .icon {
     position: absolute;
-    top: 2%;
-    left: 1%;
+    top: 15%;
+    left: 0%;
     height: 55%;
 }
 
 .title {
     position: absolute;
     top: 50%; /* How far down from the top of the background image the title is */
-    width: 60%; /* Set the width of the title */
+    width: 55%; /* Set the width of the title */
     left: 1%;
     font-variant: small-caps;
     font-size: 3vw;
