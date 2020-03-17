@@ -40,7 +40,7 @@
           "HttpVersion": "http2",
           "DefaultRootObject": "Home.html",
           "ViewerCertificate": {
-            "AcmCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/dd18887f-386f-40ac-903c-fb698c968961",
+            "AcmCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/05012ad3-f9d1-4eb7-9a0c-6354875a612f",
             "SslSupportMethod": "sni-only",
             "MinimumProtocolVersion": "TLSv1.2_2018"
           },
