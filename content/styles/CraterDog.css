@@ -135,7 +135,7 @@
 }
 
 a {
-    color: #B49FE4;  /* purple */
+    color: #1696D5;  /* blue */
 }
 
 body {
@@ -143,7 +143,7 @@ body {
 }
 
 .highlight {
-    color: #1FCE53;  /* green */
+    color: #23EC72;  /* green */
     font-style: italic;
 }
 
@@ -202,7 +202,6 @@ body {
     top: 65%; /* How far down from the top of the background image the title is */
     width: 62%; /* Set the width of the description */
     left: 3%;
-    color: #1696D5;  /* blue */
     font-size: 2vw;
     text-align: left;
 }
@@ -221,7 +220,6 @@ body {
     margin: 0% 2% 0% 1%;
     width: 82%;
     float: right;
-    color: #1696D5;  /* blue */
     font-size: 2vw;
     text-align: justify;
 }
@@ -258,7 +256,6 @@ body {
 }
 
 .item {
-    color: #1696D5;  /* blue */
     font-size: 1.6vw;
     margin: 1%;
     text-indent: -3%;
