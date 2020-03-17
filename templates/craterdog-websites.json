@@ -34,13 +34,13 @@
       "Type": "AWS::CloudFront::Distribution",
       "Properties": {
         "DistributionConfig": {
-          "Aliases": ["craterdog.net"],
+          "Aliases": ["craterdog.com"],
           "PriceClass": "PriceClass_All",
           "Enabled": true,
           "HttpVersion": "http2",
           "DefaultRootObject": "Home.html",
           "ViewerCertificate": {
-            "AcmCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/4896433b-fa2f-414d-8eed-7396c0ab193c",
+            "AcmCertificateArn": "arn:aws:acm:us-east-1:821699068808:certificate/dd18887f-386f-40ac-903c-fb698c968961",
             "SslSupportMethod": "sni-only",
             "MinimumProtocolVersion": "TLSv1.2_2018"
           },
@@ -81,10 +81,10 @@
       "Type" : "AWS::Route53::RecordSet",
       "DependsOn": [ "CraterDogDomain" ],
       "Properties" : {
-        "Name": "craterdog.net.",
+        "Name": "craterdog.com.",
         "Comment" : "Route all Crater Dog Technologies website requests to the CloudFront endpoint,",
         "Type" : "A",
-        "HostedZoneName" : "craterdog.net.",
+        "HostedZoneName" : "craterdog.com.",
         "AliasTarget" : {
           "DNSName": { "Fn::GetAtt": [ "CraterDogDomain", "DomainName" ] },
           "EvaluateTargetHealth" : false,
