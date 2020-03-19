@@ -1,5 +1,6 @@
 ## The Bali Nebula™ (v2)
-<img src="https://craterdog.com/images/CraterDogLogo.png" width="50% height="50%" />
+
+<img src="https://craterdog.com/images/CraterDogLogo.png" width="100">
 
 _**WARNING**_
 _This project is still in its early stages and the cloud architecture is likely to change._
