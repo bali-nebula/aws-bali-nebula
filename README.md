@@ -16,6 +16,7 @@ For more information on this project click on the following links:
  * [nebula services](https://github.com/craterdog-bali/js-bali-nebula-services/wiki)
 
 ### Getting Started
+Prior to cloning this project, several local tools need to be installed.
 
 #### Installing HomeBrew
 We use [homebrew](https://brew.sh/) to install the other things we need, so here is how to install it:
