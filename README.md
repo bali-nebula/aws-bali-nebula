@@ -6,8 +6,14 @@ _This project is still in its early stages and the cloud architecture is likely 
 
 ### Quick Links
 For more information on this project click on the following links:
- * [project documentation](https://github.com/craterdog-bali/aws-bali-nebula/wiki)
- * [release notes](https://github.com/craterdog-bali/aws-bali-nebula/wiki/release-notes)
+ * [project overview](https://github.com/craterdog-bali/aws-bali-nebula/wiki)
+ * [component framework](https://github.com/craterdog-bali/js-bali-component-framework/wiki)
+ * [digital notary](https://github.com/craterdog-bali/js-bali-digital-notary/wiki)
+ * [document repository](https://github.com/craterdog-bali/js-bali-document-repository/wiki)
+ * [type compiler](https://github.com/craterdog-bali/js-bali-type-compiler/wiki)
+ * [virtual machine](https://github.com/craterdog-bali/js-bali-virtual-machine/wiki)
+ * [nebula API](https://github.com/craterdog-bali/js-bali-nebula-api/wiki)
+ * [nebula services](https://github.com/craterdog-bali/js-bali-nebula-services/wiki)
 
 ### Getting Started
 
