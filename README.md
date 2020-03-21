@@ -2,7 +2,7 @@
 <img src="https://craterdog.com/images/CraterDogLogo.png" width="50%">
 
 _**WARNING**_
-_This project is still in its &lt;span style=&quot;color: #00ff00&quot;&gt;early&lt;/span&gt; stages and the cloud architecture is likely to change._
+_This project is still in its early stages and the cloud architecture is likely to change._
 
 ### Quick Links
 For more information on this project click on the following links:
