@@ -17,7 +17,7 @@ For more information on this project click on the following links:
 
 ### Getting Started
 
-### Installing HomeBrew
+#### Installing HomeBrew
 We use [homebrew](https://brew.sh/) to install the other things we need, so here is how to install it:
 ```
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
