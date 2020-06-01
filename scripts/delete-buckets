@@ -13,11 +13,11 @@ ${SCRIPTS}/delete-bucket craterdog-websites-us-east-1
 echo "Deleting the names bucket..."
 ${SCRIPTS}/delete-bucket bali-nebula-names-us-east-1
 
-echo "Deleting the drafts bucket..."
-${SCRIPTS}/delete-bucket bali-nebula-drafts-us-east-1
-
 echo "Deleting the documents bucket..."
 ${SCRIPTS}/delete-bucket bali-nebula-documents-us-east-1
+
+echo "Deleting the contracts bucket..."
+${SCRIPTS}/delete-bucket bali-nebula-contracts-us-east-1
 
 echo "Deleting the messages bucket..."
 ${SCRIPTS}/delete-bucket bali-nebula-messages-us-east-1
