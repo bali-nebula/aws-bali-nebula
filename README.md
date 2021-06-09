@@ -21,15 +21,16 @@ Prior to cloning this project, several local tools need to be installed.
 #### Installing HomeBrew
 We use [homebrew](https://brew.sh/) to install the other things we need, so here is how to install it:
 ```
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew update
 brew doctor
 ```
 
 #### Installing Python3
 The scripts that are used in this repository depend on [python3](https://www.python.org/). Here is how to install it:
 ```
-brew install python3
-python3 --version
+brew install python
+python --version
 ```
 
 #### Installing AWS CLI
@@ -42,8 +43,7 @@ aws --version
 #### Installing Boto3
 Some of the [AWS S3 CLI](https://docs.aws.amazon.com/cli/latest/reference/s3/index.html) commands don't work well, so instead we use the [python3 boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) library. Here is how to install it:
 ```
-curl https://bootstrap.pypa.io/get-pip.py | python3
-pip3 install boto3 --user
+pip install boto3
 ```
 
 ### Contributing
