@@ -147,6 +147,12 @@ body {
     font-style: italic;
 }
 
+.superscript {
+    color: #23EC72;  /* green */
+    vertical-align: super;
+    font-size: 67%;
+}
+
 .header {
     position: relative;
 }
@@ -191,7 +197,7 @@ body {
     position: absolute;
     top: 50%; /* How far down from the top of the background image the title is */
     width: 55%; /* Set the width of the title */
-    left: 1%;
+    left: 3%;
     font-variant: small-caps;
     font-size: 3vw;
     text-align: left;
@@ -201,7 +207,7 @@ body {
     position: absolute;
     top: 65%; /* How far down from the top of the background image the title is */
     width: 62%; /* Set the width of the description */
-    left: 3%;
+    left: 5%;
     font-size: 2vw;
     text-align: left;
 }
@@ -259,5 +265,11 @@ body {
     font-size: 1.6vw;
     margin: 1%;
     text-indent: -3%;
+}
+
+.footnote {
+    margin: 2%;
+    font-size: 1.2vw;
+    text-align: left;
 }
 
