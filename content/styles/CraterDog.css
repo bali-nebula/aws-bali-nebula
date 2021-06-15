@@ -205,11 +205,11 @@ body {
 
 .description {
     position: absolute;
-    top: 65%; /* How far down from the top of the background image the title is */
+    top: 65%; /* How far down from the top of the background image the description is */
     width: 62%; /* Set the width of the description */
     left: 5%;
     font-size: 2vw;
-    text-align: left;
+    text-align: justify;
 }
 
 .profile {
