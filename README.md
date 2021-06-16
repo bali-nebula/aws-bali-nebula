@@ -6,6 +6,7 @@ _This project is still in its early stages and the cloud architecture is likely 
 
 ### Quick Links
 For more information on this project click on the following links:
+ * [project vision](https://github.com/craterdog-bali/aws-bali-nebula/wiki/Vision)
  * [project overview](https://github.com/craterdog-bali/aws-bali-nebula/wiki)
  * [component framework](https://github.com/craterdog-bali/js-bali-component-framework/wiki)
  * [digital notary](https://github.com/craterdog-bali/js-bali-digital-notary/wiki)
