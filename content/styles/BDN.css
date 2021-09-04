@@ -322,7 +322,7 @@ pre {
     background-color: #f0f0f0; /* light gray */
 }
 
-.procedure {
+.code {
     font-family: 'Roboto Mono', monospace;
     border: 1px solid;
     background-color: #f2e6ff; /* light violet */
