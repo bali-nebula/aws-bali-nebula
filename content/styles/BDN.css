@@ -181,7 +181,7 @@ pre {
     background-color: transparent;
 }
 
-/* handle reference types as keys */
+/* handle resource types as keys */
 .key a {
     font-style: italic;
     text-align: right;
@@ -261,7 +261,7 @@ pre {
     color: Teal;
 }
 
-.reference {
+.resource {
     display: block;
     color: CornflowerBlue;
 }
@@ -294,7 +294,7 @@ pre {
     border: 0px solid;
 }
 
-/* handle reference types as items */
+/* handle resource types as items */
 .range a {
     display: inline-block;
     border: 0px solid;
