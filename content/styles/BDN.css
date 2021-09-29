@@ -229,6 +229,10 @@ pre {
     color: DarkGoldenRod;
 }
 
+.boolean {
+    color: Teal;
+}
+
 .duration {
     color: DarkViolet;
 }
@@ -284,7 +288,6 @@ pre {
 
 .range {
     border: 1px solid;
-    padding: 0px;
     background-color: White;  /* range is not an element */
 }
 
@@ -292,6 +295,7 @@ pre {
 .range div {
     display: inline-block;
     border: 0px solid;
+    padding: 2px;
 }
 
 /* handle resource types as items */
