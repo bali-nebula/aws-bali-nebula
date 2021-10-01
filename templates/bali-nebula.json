@@ -2,11 +2,6 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "This cloud formation template is used to setup the Bali Nebula™ environment.",
   "Parameters": {
-    "ServiceName": {
-      "Description": "The name of the lambda function.",
-      "Type": "String",
-      "Default": "bali-nebula-repository"
-    },
     "TestColor": {
       "Description": "The color of the environment being used for testing.",
       "Type": "String",
@@ -247,7 +242,7 @@
         ]
       }
     },
-    "ServiceApi": {
+    "RepositoryAPI": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
         "Name": "Bali Nebula Repository Service",
@@ -255,43 +250,43 @@
         "EndpointConfiguration": { "Types": [ "REGIONAL" ] }
       }
     },
-    "ServiceResource": {
+    "RepositoryResource": {
       "Type": "AWS::ApiGateway::Resource",
-      "DependsOn": [ "ServiceApi" ],
+      "DependsOn": [ "RepositoryAPI" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceApi" },
-        "ParentId": { "Fn::GetAtt": [ "ServiceApi", "RootResourceId" ] },
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "ParentId": { "Fn::GetAtt": [ "RepositoryAPI", "RootResourceId" ] },
         "PathPart": "{proxy+}"
       }
     },
-    "ServiceMethod": {
+    "RepositoryMethod": {
       "Type": "AWS::ApiGateway::Method",
-      "DependsOn": [ "ServiceResource" ],
+      "DependsOn": [ "RepositoryResource" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceApi" },
-        "ResourceId": { "Ref": "ServiceResource" },
+        "RestApiId": { "Ref": "RepositoryAPI" },
+        "ResourceId": { "Ref": "RepositoryResource" },
         "AuthorizationType": "NONE",
         "HttpMethod": "ANY",
         "Integration": {
           "Type": "AWS_PROXY",
           "IntegrationHttpMethod": "POST",
-          "Uri": { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ServiceLambda.Arn}/invocations" }
+          "Uri": { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RepositoryLambda.Arn}/invocations" }
         }
       }
     },
-    "ServiceDeployment": {
+    "RepositoryDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [ "ServiceMethod" ],
+      "DependsOn": [ "RepositoryMethod" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceApi" }
+        "RestApiId": { "Ref": "RepositoryAPI" }
       }
     },
-    "ServiceBlueStage": {
+    "RepositoryBlueStage": {
       "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": [ "ServiceDeployment" ],
+      "DependsOn": [ "RepositoryDeployment" ],
       "Properties": {
-        "DeploymentId": { "Ref": "ServiceDeployment" },
-        "RestApiId": { "Ref": "ServiceApi" },
+        "DeploymentId": { "Ref": "RepositoryDeployment" },
+        "RestApiId": { "Ref": "RepositoryAPI" },
         "StageName": "blue",
         "Description" : "This stage deploys the Bali Nebula Repository Service in the blue environment.",
         "Variables" : { "EnvironmentColor": "blue" },
@@ -300,11 +295,11 @@
         "CacheClusterSize" : "0.5"
       }
     },
-    "ServiceBluePath": {
+    "RepositoryBluePath": {
       "Type": "AWS::ApiGateway::BasePathMapping",
-      "DependsOn": [ "ServiceBlueStage" ],
+      "DependsOn": [ "RepositoryBlueStage" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceApi" },
+        "RestApiId": { "Ref": "RepositoryAPI" },
         "DomainName": "bali-nebula.net",
         "BasePath": {
           "Fn::If" : [
@@ -316,12 +311,12 @@
         "Stage": "blue"
       }
     },
-    "ServiceGreenStage": {
+    "RepositoryGreenStage": {
       "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": [ "ServiceDeployment" ],
+      "DependsOn": [ "RepositoryDeployment" ],
       "Properties": {
-        "DeploymentId": { "Ref": "ServiceDeployment" },
-        "RestApiId": { "Ref": "ServiceApi" },
+        "DeploymentId": { "Ref": "RepositoryDeployment" },
+        "RestApiId": { "Ref": "RepositoryAPI" },
         "StageName": "green",
         "Description" : "This stage deploys the Bali Nebula Repository Service in the green environment.",
         "Variables" : { "EnvironmentColor": "green" },
@@ -330,11 +325,11 @@
         "CacheClusterSize" : "0.5"
       }
     },
-    "ServiceGreenPath": {
+    "RepositoryGreenPath": {
       "Type": "AWS::ApiGateway::BasePathMapping",
-      "DependsOn": [ "ServiceGreenStage" ],
+      "DependsOn": [ "RepositoryGreenStage" ],
       "Properties": {
-        "RestApiId": { "Ref": "ServiceApi" },
+        "RestApiId": { "Ref": "RepositoryAPI" },
         "DomainName": "bali-nebula.net",
         "BasePath": {
           "Fn::If" : [
@@ -346,7 +341,7 @@
         "Stage": "green"
       }
     },
-    "ServiceRole": {
+    "RepositoryRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -406,7 +401,7 @@
                     "logs:PutLogEvents"
                   ],
                   "Resource": [
-                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${ServiceName}:*" }
+                    { "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/bali-nebula-repository:*" }
                   ]
                 }
               ]
@@ -415,42 +410,42 @@
         ]
       }
     },
-    "ServiceLambda": {
+    "RepositoryLambda": {
       "Type": "AWS::Lambda::Function",
-      "DependsOn": [ "ServiceRole" ],
+      "DependsOn": [ "RepositoryRole" ],
       "Properties": {
-        "FunctionName": { "Ref": "ServiceName" },
+        "FunctionName": "bali-nebula-repository",
         "Description": "This lambda function implements the Bali Nebula Repository Service.",
-        "Role": { "Fn::GetAtt": [ "ServiceRole", "Arn" ] },
+        "Role": { "Fn::GetAtt": [ "RepositoryRole", "Arn" ] },
         "Runtime": "nodejs12.x",
         "MemorySize": 256,
         "Timeout": 10,
         "Code": {
           "S3Bucket": "craterdog-aws-us-east-1",
-          "S3Key": { "Fn::Sub": "lambdas/${ServiceName}.zip" }
+          "S3Key": { "Fn::Sub": "lambdas/bali-nebula-repository.zip" }
         },
-        "Handler": { "Fn::Sub": "${ServiceName}.handler" }
+        "Handler": { "Fn::Sub": "bali-nebula-repository.handler" }
       }
     },
-    "ServicePermission": {
+    "RepositoryPermission": {
       "Type": "AWS::Lambda::Permission",
-      "DependsOn": [ "ServiceLambda" ],
+      "DependsOn": [ "RepositoryLambda" ],
       "Properties": {
         "Principal": "apigateway.amazonaws.com",
         "Action": "lambda:InvokeFunction",
-        "FunctionName": { "Fn::GetAtt": [ "ServiceLambda", "Arn" ] },
-        "SourceArn": { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ServiceApi}/*" }
+        "FunctionName": { "Fn::GetAtt": [ "RepositoryLambda", "Arn" ] },
+        "SourceArn": { "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RepositoryAPI}/*" }
       }
     },
-    "ServiceLogGroup": {
+    "RepositoryLogGroup": {
       "Type": "AWS::Logs::LogGroup",
-      "DependsOn": [ "ServiceLambda" ],
+      "DependsOn": [ "RepositoryLambda" ],
       "Properties": {
-        "LogGroupName": { "Fn::Sub": "/aws/lambda/${ServiceLambda}" },
+        "LogGroupName": { "Fn::Sub": "/aws/lambda/${RepositoryLambda}" },
         "RetentionInDays": 7
       }
     },
-    "ApiRole": {
+    "APIRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -469,11 +464,11 @@
         ]
       }
     },
-    "ApiAccount": {
+    "APIAccount": {
       "Type": "AWS::ApiGateway::Account",
-      "DependsOn": [ "ApiRole" ],
+      "DependsOn": [ "APIRole" ],
       "Properties": {
-        "CloudWatchRoleArn": { "Fn::GetAtt": [ "ApiRole", "Arn" ] }
+        "CloudWatchRoleArn": { "Fn::GetAtt": [ "APIRole", "Arn" ] }
       }
     }
   }
