@@ -126,11 +126,11 @@
 }
 
 html {
-    background-color: DarkGray;
+    background-color: DimGray;
 }
 
 * {
-    color: Gray;
+    color: #595959; /* dimmer DimGray */
     text-align: left;
     font-family: Roboto, sans-serif;
     padding: 5px;
@@ -153,7 +153,7 @@ pre {
 }
 
 .type {
-    color: #404040; /* dark gray */
+    color: #595959; /* dimmer DimGray */
     padding: 1px;
 }
 
@@ -219,8 +219,8 @@ pre {
 
 .element {
     border: 1px solid;
-    border-color: Gray;
-    background-color: White;
+    border-color: #595959; /* dimmer DimGray */
+    background-color: WhiteSmoke;
 }
 
 /* override specific element types AFTER element has been defined */
@@ -295,7 +295,7 @@ pre {
 
 .range {
     border: 1px solid;
-    background-color: White;  /* range is not an element */
+    background-color: WhiteSmoke;  /* range is not an element */
 }
 
 /* handle most element types as items */
@@ -319,24 +319,24 @@ pre {
 
 .list {
     border: 1px solid;
-    background-color: #e6f2ff; /* light blue */
+    background-color: PowderBlue;
 }
 
 .catalog {
     border: 1px solid;
-    background-color: #ecf9ec; /* light green */
+    background-color: #bfd9bf; /* lighter SeaGreen */
 }
 
 .parameters {
     border: 1px solid;
     border-top: 0px;  /* flush with lower border of component above */
-    background-color: #f0f0f0; /* light gray */
+    background-color: LightGray;
 }
 
 .code {
     font-family: 'Roboto Mono', monospace;
     border: 1px solid;
-    background-color: #f2e6ff; /* light violet */
+    background-color: Lavender;
     margin: 0; /* a pre element defaults to a non-zero margin */
 }
 
