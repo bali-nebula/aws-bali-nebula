@@ -142,6 +142,11 @@ pre {
     padding: 3px;
 }
 
+.title {
+    color: WhiteSmoke;
+    text-align: center;
+}
+
 .document {
 }
 
