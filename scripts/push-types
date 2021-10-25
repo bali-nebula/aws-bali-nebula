@@ -1,0 +1,46 @@
+#!/bin/bash
+SCRIPTS=`dirname $0`
+
+echo "Emptying the names bucket..."
+${SCRIPTS}/empty-bucket bali-nebula-names-us-east-1
+echo
+
+echo "Emptying the documents bucket..."
+${SCRIPTS}/empty-bucket bali-nebula-documents-us-east-1
+echo
+
+echo "Emptying the contracts bucket..."
+${SCRIPTS}/empty-bucket bali-nebula-contracts-us-east-1
+echo
+
+echo "Emptying the messages bucket..."
+${SCRIPTS}/empty-bucket bali-nebula-messages-us-east-1
+echo
+
+cd ${SCRIPTS}/../../bali-core-components/test/config
+
+echo "Pushing out the contracts to S3..."
+for file in `find contracts -type f | grep "\.bali$"`; do
+    key=${file:10}
+    echo "  ${key}";
+    aws --region us-east-1 s3api put-object \
+        --bucket bali-nebula-contracts-us-east-1 \
+        --content-type application/bali \
+        --key ${key} \
+        --body ${file}
+done
+echo
+
+echo "Pushing out the names to S3..."
+for file in `find names -type f | grep "\.bali$"`; do
+    key=${file:6}
+    echo "  ${key}";
+    aws --region us-east-1 s3api put-object \
+        --bucket bali-nebula-names-us-east-1 \
+        --content-type application/bali \
+        --key ${key} \
+        --body ${file}
+done
+echo
+
+echo "Done."
