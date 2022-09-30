@@ -1,20 +1,18 @@
-## The Bali Nebula™ (v2)
+## The Bali Nebula™
 <img src="https://craterdog.com/images/CraterDogLogo.png" width="50%">
 
-_**WARNING**_
-_This project is still in its early stages and the cloud architecture is likely to change._
+### _\* \* \* NOTICE \* \* \*_
+_This project is still under development and is for reference purposes only. If
+you are interested in this project or have suggestions on how to improve it feel
+free to contact us at [craterdog@gmail.com](mailto:craterdog@gmail.com)._
 
 ### Quick Links
 For more information on this project click on the following links:
  * [project vision](https://github.com/craterdog-bali/aws-bali-nebula/wiki/Vision)
  * [project overview](https://github.com/craterdog-bali/aws-bali-nebula/wiki)
- * [component framework](https://github.com/craterdog-bali/js-bali-component-framework/wiki)
- * [digital notary](https://github.com/craterdog-bali/js-bali-digital-notary/wiki)
- * [document repository](https://github.com/craterdog-bali/js-bali-document-repository/wiki)
- * [type compiler](https://github.com/craterdog-bali/js-bali-type-compiler/wiki)
- * [virtual machine](https://github.com/craterdog-bali/js-bali-virtual-machine/wiki)
- * [nebula API](https://github.com/craterdog-bali/js-bali-nebula-api/wiki)
- * [nebula services](https://github.com/craterdog-bali/js-bali-nebula-services/wiki)
+ * [bali document notation](https://github.com/craterdog-bali/go-bali-document-notation/wiki)
+ * [digital notary](https://github.com/craterdog-bali/go-bali-digital-notary/wiki)
+ * [nebula services](https://github.com/craterdog-bali/go-bali-nebula-services/wiki)
 
 ### Getting Started
 Prior to cloning this project, several local tools need to be installed.
